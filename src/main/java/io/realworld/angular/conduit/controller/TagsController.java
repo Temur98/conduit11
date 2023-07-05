@@ -1,14 +1,15 @@
 package io.realworld.angular.conduit.controller;
 
+import io.realworld.angular.conduit.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/articles")
+@RequestMapping("/tags")
 @Slf4j
 @RequiredArgsConstructor
-public class ArticlesController {
+public class TagsController {
+    private final TagService tagService;
 }
