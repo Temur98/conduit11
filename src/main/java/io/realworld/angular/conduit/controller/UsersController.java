@@ -10,5 +10,4 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 public class UsersController {
-//    nimadir
 }
