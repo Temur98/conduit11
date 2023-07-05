@@ -20,4 +20,5 @@ public class User {
     private String bio;
     private String password;
     private String email;
+    private String image;
 }
