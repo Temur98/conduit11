@@ -1,12 +1,6 @@
 package io.realworld.angular.conduit.model;
 
-<<<<<<< HEAD
-public class Article {
-    private Long id;
-    private Long userId;
-    private String title;
-}
-=======
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -37,4 +31,3 @@ public class Article {
     @JoinColumn(name = "author_id")
     private User user;
 }
->>>>>>> master
