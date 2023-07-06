@@ -1,34 +1,48 @@
 package io.realworld.angular.conduit.model;
 
-
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Data
-@Table(name = "articles")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String slug;
+    private String slag;
     private String title;
     private String description;
     private String body;
-    private LocalDate createAt;
-    private LocalDate updateAt;
     @ManyToMany
     @JoinTable(
-            name = "article_tag",
-            joinColumns = @JoinColumn(name = "article_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
+            name = "article_tag"
+
+
+
+
+
+
+
     )
     private List<Tag> tagList;
-    @ManyToOne
-    @JoinColumn(name = "author_id")
-    private User user;
-}
+    private String createdAt;
+    private String updateAt;
+    private Boolean favorited;
+    private Long amountOfLikes;
+//    private Profile profile;
 
+
+
+
+
+
+
+
+
+}
