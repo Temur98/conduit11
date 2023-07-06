@@ -5,4 +5,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface ArticleService {
     ResponseEntity<ArticleDTO> getArticles(Integer limit, Integer offset);
+//    ResponseEntity<ArticleResultDto> getArticleBySlug(String slug);
+
+//    ResponseEntity<CommentsDto> getArticleComments(String slug);
 }

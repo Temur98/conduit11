@@ -31,3 +31,4 @@ public class Article {
     @JoinColumn(name = "author_id")
     private User user;
 }
+
