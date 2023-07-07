@@ -22,13 +22,6 @@ public class Article {
     @ManyToMany
     @JoinTable(
             name = "article_tag"
-
-
-
-
-
-
-
     )
     private List<Tag> tagList;
     private String createdAt;
