@@ -5,6 +5,8 @@ import io.realworld.angular.conduit.model.Article;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 @RequiredArgsConstructor
 public class ArticleMapper {
@@ -18,14 +20,18 @@ public class ArticleMapper {
         if(article == null) return null;
         return new ArticleDTO(
                 article.getId(),
-                article.getSlug(),
+                article.getTitle().concat("-").concat(String.valueOf(article.getId())),
                 article.getTitle(),
                 article.getDescription(),
                 article.getBody(),
+                article.getTagList().stream()
+                        .map(TagMapper::toDto)
+                        .collect(Collectors.toList()),
                 article.getCreateAt(),
                 article.getUpdateAt(),
-                article.getTagList(),
-                article.getUser()
+                false,
+                0L,
+                UserMapper.toDto(article.getAuthor())
         );
     }
 }

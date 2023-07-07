@@ -20,7 +20,7 @@ public class UserMapper {
         );
 
     }
-    public static UserDTO userDTO(User user){
+    public static UserDTO toDto(User user){
         if(user == null) return null;
         return new UserDTO(
                 user.getId(),

@@ -1,6 +1,7 @@
 package io.realworld.angular.conduit.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -13,8 +14,10 @@ public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String slug;
+    @NotEmpty
+    @Column(name = "title", nullable = false)
     private String title;
+
     private String description;
     private String body;
     private LocalDate createAt;
@@ -28,6 +31,6 @@ public class Article {
     private List<Tag> tagList;
     @ManyToOne
     @JoinColumn(name = "author_id")
-    private User user;
+    private User author;
 
 }

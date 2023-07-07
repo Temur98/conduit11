@@ -8,16 +8,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/articles")
 @Slf4j
 @RequiredArgsConstructor
 public class ArticlesController {
     private final ArticleService articleService;
-
+    @GetMapping
+    public ResponseEntity<ArticleResponse> getArticles(@RequestParam Optional<Integer> pageNum, @RequestParam Optional<Integer> size){
+        return articleService.getArticles(pageNum, size);
+    }
     @GetMapping("/{slag}")
-    public ResponseEntity<ArticleResponse> getById(@PathVariable String slag){
-        return articleService.getById(slag);
+    public ResponseEntity<ArticleResponse> getArticleBySlag(@PathVariable String slag){
+        return articleService.getArticleBySlag(slag);
+    }
+
+    @GetMapping("/{slag}/comments")
+    public ResponseEntity<ArticleResponse> getArticleComments(@PathVariable String slag){
+        return articleService.getArticleComments(slag);
     }
 
     @PostMapping

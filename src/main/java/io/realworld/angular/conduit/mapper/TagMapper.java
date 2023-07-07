@@ -15,7 +15,7 @@ public class TagMapper {
                 tagDTO.name()
         );
     }
-    public static TagDTO tagDTO(Tag tag){
+    public static TagDTO toDto(Tag tag){
         if(tag == null) return null;
         return new TagDTO(
                 tag.getId(),
