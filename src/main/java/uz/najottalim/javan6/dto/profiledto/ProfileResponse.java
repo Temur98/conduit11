@@ -1,4 +1,4 @@
-package uz.najottalim.javan6.dto.articledto;
+package uz.najottalim.javan6.dto.profiledto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleResultDto {
-    private ArticleDto article;
+public class ProfileResponse {
+    private ProfileDto profile;
 }

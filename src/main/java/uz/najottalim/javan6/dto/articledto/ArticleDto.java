@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uz.najottalim.javan6.dto.ProfileDto;
-import uz.najottalim.javan6.dto.TagDto;
+import uz.najottalim.javan6.dto.profiledto.ProfileDto;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -21,8 +20,8 @@ public class ArticleDto {
     private String body;
     @JsonProperty(value = "tagList")
     private List<String> tags;
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     @JsonProperty(value = "favorited",defaultValue = "false")
     private Boolean favorite;
     @JsonProperty(defaultValue = "0")

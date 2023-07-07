@@ -13,9 +13,6 @@ public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    private String email;
-    private String username;
-    private String password;
     private String bio;
     private String imagePath;
     private Boolean following;

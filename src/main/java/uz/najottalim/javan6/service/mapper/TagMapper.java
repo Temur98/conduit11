@@ -1,8 +1,7 @@
 package uz.najottalim.javan6.service.mapper;
 
-import lombok.Setter;
 import org.springframework.stereotype.Service;
-import uz.najottalim.javan6.dto.TagDto;
+import uz.najottalim.javan6.dto.tagdto.TagDto;
 import uz.najottalim.javan6.entity.Tag;
 
 @Service

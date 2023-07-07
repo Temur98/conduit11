@@ -2,9 +2,7 @@ package uz.najottalim.javan6.service.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import uz.najottalim.javan6.dto.ProfileDto;
 import uz.najottalim.javan6.dto.UserDto;
-import uz.najottalim.javan6.entity.Profile;
 import uz.najottalim.javan6.entity.User;
 
 @Service

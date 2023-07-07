@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User save = userRepository.save(userMapper.toEntity(userDto));
 
         Profile profile = new Profile(
-                null,save.getEmail(), save.getUsername(),save.getPassword(),"","",false,save
+                null,"","",false,save
         );
         profileRepository.save(profile);
         return ResponseEntity.ok(userMapper.toDto(save));

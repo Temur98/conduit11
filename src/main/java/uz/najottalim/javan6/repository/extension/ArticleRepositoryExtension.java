@@ -1,0 +1,10 @@
+package uz.najottalim.javan6.repository.extension;
+
+import uz.najottalim.javan6.entity.Article;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface ArticleRepositoryExtension {
+    List<Article> getArticlesPageable(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
+}
