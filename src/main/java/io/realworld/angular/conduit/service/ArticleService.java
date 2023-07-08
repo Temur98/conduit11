@@ -1,16 +1,19 @@
 package io.realworld.angular.conduit.service;
 
-import io.realworld.angular.conduit.dto.ArticleDTO;
-import io.realworld.angular.conduit.dto.response.ArticleResponse;
+import io.realworld.angular.conduit.dto.ArticleDto;
+import io.realworld.angular.conduit.dto.ResponseDto;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface ArticleService {
-    ResponseEntity<ArticleResponse> getById(String id);
+    ResponseDto<ArticleDto> addNewArticle(ArticleDto articleDto);
 
-    ResponseEntity<ArticleResponse> addArticle(ArticleDTO articleDTO);
+    ResponseDto<ArticleDto> getById(Long id);
 
-    ResponseEntity<ArticleResponse> updateArticle(ArticleDTO articleDTO);
+    ResponseDto<ArticleDto> deleteById(Long id);
 
-    ResponseEntity<ArticleResponse> deleteArticle(Long id);
+    ResponseDto<ArticleDto> edit(ArticleDto articleDto);
 
+    ResponseDto<List<ArticleDto>> getAllArticle();
 }

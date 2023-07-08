@@ -1,28 +1,27 @@
 package io.realworld.angular.conduit.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Table(name = "comments")
+@NoArgsConstructor
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String body;
     private LocalDate createAt;
+    private LocalDateTime updateAt;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private Users user;
     @ManyToOne
     @JoinColumn(name = "article_id")
     private Article article;
-
 }

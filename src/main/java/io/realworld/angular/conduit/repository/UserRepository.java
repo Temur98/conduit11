@@ -1,10 +1,10 @@
 package io.realworld.angular.conduit.repository;
 
-import io.realworld.angular.conduit.model.User;
+import io.realworld.angular.conduit.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User,Long> {
+public interface UserRepository extends JpaRepository<Users,Long> {
 
 }
