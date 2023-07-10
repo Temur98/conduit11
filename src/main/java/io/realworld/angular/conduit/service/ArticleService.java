@@ -1,22 +1,25 @@
 package io.realworld.angular.conduit.service;
 
 import io.realworld.angular.conduit.dto.ArticleDTO;
-import io.realworld.angular.conduit.dto.response.ArticleResponse;
+import io.realworld.angular.conduit.dto.CommonResponse;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ArticleService {
-    ResponseEntity<ArticleResponse> getArticleBySlag(String slug);
+    ResponseEntity<CommonResponse<List<ArticleDTO>>>getAllArticles(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
 
-    ResponseEntity<ArticleResponse> addArticle(ArticleDTO articleDTO);
+    ResponseEntity<ArticleDTO> getArticleBySlag(String slug);
 
-    ResponseEntity<ArticleResponse> updateArticle(ArticleDTO articleDTO);
+    ResponseEntity<ArticleDTO> addArticle(ArticleDTO articleDTO);
+
+    ResponseEntity<ArticleDTO> updateArticle(ArticleDTO articleDTO);
 
 
-    ResponseEntity<ArticleResponse> updateArticleBySlag(String slag, ArticleDTO articleDTO);
+    ResponseEntity<ArticleDTO> updateArticleBySlag(String slag, ArticleDTO articleDTO);
 
-    ResponseEntity<ArticleResponse> addFavorite(String slug);
+    ResponseEntity<ArticleDTO> addFavorite(String slug);
 
     void deleteFavorite(String slug);
 

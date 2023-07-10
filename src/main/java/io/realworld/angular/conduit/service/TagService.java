@@ -1,9 +1,12 @@
 package io.realworld.angular.conduit.service;
 
-import io.realworld.angular.conduit.dto.response.TagResponse;
+import io.realworld.angular.conduit.dto.CommonResponse;
+import io.realworld.angular.conduit.dto.TagDTO;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface TagService {
 
-    ResponseEntity<TagResponse> getAll();
+    ResponseEntity<CommonResponse<List<TagDTO>>> getAll();
 }

@@ -1,11 +1,13 @@
 package io.realworld.angular.conduit.dto;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import org.springframework.context.annotation.Profile;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public record ArticleDTO<slug>(
+@JsonRootName("article")
+public record ArticleDTO(
         Long id,
         String slug,
         String title,
@@ -16,7 +18,7 @@ public record ArticleDTO<slug>(
         LocalDate updateAt,
         Boolean favorited,
         Long favoritesCount,
-        Profile author
+        ProfileDTO author
 ) {
 
 }

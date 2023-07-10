@@ -1,6 +1,6 @@
 package io.realworld.angular.conduit.controller;
 
-import io.realworld.angular.conduit.dto.response.ProfileResponse;
+import io.realworld.angular.conduit.dto.ProfileDTO;
 import io.realworld.angular.conduit.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,17 +15,17 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @GetMapping("/{username}")
-    public ResponseEntity<ProfileResponse> getProfileByUsername(@PathVariable String username) {
+    public ResponseEntity<ProfileDTO> getProfileByUsername(@PathVariable String username) {
         return profileService.getProfileByUsername(username);
     }
 
     @PostMapping("/{username}/follow")
-    public ResponseEntity<ProfileResponse> followToProfile(@PathVariable String username) {
+    public ResponseEntity<ProfileDTO> followToProfile(@PathVariable String username) {
         return profileService.followToProfile(username);
     }
 
     @DeleteMapping("/{username}/follow")
-    public ResponseEntity<ProfileResponse> unfollowFromProfile(@PathVariable String username) {
+    public ResponseEntity<ProfileDTO> unfollowFromProfile(@PathVariable String username) {
         return profileService.unfollowFromProfile(username);
     }
 

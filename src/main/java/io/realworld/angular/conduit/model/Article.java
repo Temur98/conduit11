@@ -31,5 +31,5 @@ public class Article {
     private List<Tag> tagList;
     @ManyToOne
     @JoinColumn(name = "author_id")
-    private User user;
+    private User author;
 }

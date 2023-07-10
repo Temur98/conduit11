@@ -1,13 +1,14 @@
 package io.realworld.angular.conduit.controller;
 
 import io.realworld.angular.conduit.dto.ArticleDTO;
-import io.realworld.angular.conduit.dto.response.ArticleResponse;
+import io.realworld.angular.conduit.dto.CommonResponse;
 import io.realworld.angular.conduit.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -17,18 +18,29 @@ import java.util.Optional;
 public class ArticlesController {
     private final ArticleService articleService;
 
+    @GetMapping
+    public ResponseEntity<CommonResponse<List<ArticleDTO>>> getAllArticles(
+            @RequestParam Optional<Integer> limit,
+            @RequestParam Optional<Integer> offset,
+            @RequestParam Optional<String> author,
+            @RequestParam Optional<String> favorited,
+            @RequestParam Optional<String> tag
+    ){
+        return articleService.getAllArticles(limit, offset, author, favorited, tag);
+    }
+
     @GetMapping("/{slug}")
-    public ResponseEntity<ArticleResponse> getArticleBySlag(@PathVariable String slug){
+    public ResponseEntity<ArticleDTO> getArticleBySlag(@PathVariable String slug){
         return articleService.getArticleBySlag(slug);
     }
 
     @PutMapping("/{slug}")
-    public ResponseEntity<ArticleResponse> updateArticleBySlag(@PathVariable String slug, @RequestBody ArticleDTO articleDTO){
+    public ResponseEntity<ArticleDTO> updateArticleBySlag(@PathVariable String slug, @RequestBody ArticleDTO articleDTO){
         return articleService.updateArticleBySlag(slug, articleDTO);
     }
 
     @PostMapping("/{slug}/favorite")
-    public ResponseEntity<ArticleResponse> addFavorite(@PathVariable String slug){
+    public ResponseEntity<ArticleDTO> addFavorite(@PathVariable String slug){
         return articleService.addFavorite(slug);
     }
 
@@ -39,12 +51,12 @@ public class ArticlesController {
 
 
     @PostMapping
-    public ResponseEntity<ArticleResponse> addArticle(@RequestBody ArticleDTO articleDTO){
+    public ResponseEntity<ArticleDTO> addArticle(@RequestBody ArticleDTO articleDTO){
         return articleService.addArticle(articleDTO);
     }
 
     @PutMapping
-    public ResponseEntity<ArticleResponse> updateArticle(@RequestBody ArticleDTO articleDTO){
+    public ResponseEntity<ArticleDTO> updateArticle(@RequestBody ArticleDTO articleDTO){
         return articleService.updateArticle(articleDTO);
     }
 

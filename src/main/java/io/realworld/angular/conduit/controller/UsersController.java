@@ -1,7 +1,6 @@
 package io.realworld.angular.conduit.controller;
 
 import io.realworld.angular.conduit.dto.UserDTO;
-import io.realworld.angular.conduit.dto.response.UserResponse;
 import io.realworld.angular.conduit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,22 +14,22 @@ public class UsersController {
     private final UserService userService;
 
     @PostMapping("/users/login")
-    public ResponseEntity<UserResponse> loginUser(@RequestBody UserDTO user){
+    public ResponseEntity<UserDTO> loginUser(@RequestBody UserDTO user){
         return userService.loginUser(user);
     }
 
     @PostMapping("/users")
-    public ResponseEntity<UserResponse> registerUser(@RequestBody UserDTO user){
+    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO user){
         return userService.registerUser(user);
     }
 
     @GetMapping("/user")
-    public ResponseEntity<UserResponse> getCurrentUser(){
+    public ResponseEntity<UserDTO> getCurrentUser(){
         return userService.getCurrentUser();
     }
 
     @PutMapping("/user")
-    public ResponseEntity<UserResponse> updateUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO){
         return userService.updateUser(userDTO);
     }
 }
