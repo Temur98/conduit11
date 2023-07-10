@@ -13,7 +13,7 @@ public record ArticleDTO(
         String title,
         String description,
         String body,
-        List<String> tagList,
+        List<TagDTO> tagList,
         LocalDate createdAt,
         LocalDate updateAt,
         Boolean favorited,
