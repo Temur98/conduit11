@@ -1,27 +1,27 @@
 package io.realworld.angular.conduit.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "articles")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotEmpty
-    @Column(name = "title", nullable = false)
+    private String slug;
     private String title;
-
     private String description;
     private String body;
-    private LocalDate createAt;
-    private LocalDate updateAt;
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
     @ManyToMany
     @JoinTable(
             name = "article_tag",
@@ -31,6 +31,5 @@ public class Article {
     private List<Tag> tagList;
     @ManyToOne
     @JoinColumn(name = "author_id")
-    private User author;
-
+    private User user;
 }

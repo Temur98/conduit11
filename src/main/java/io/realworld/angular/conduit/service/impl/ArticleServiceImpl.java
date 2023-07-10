@@ -1,11 +1,12 @@
 package io.realworld.angular.conduit.service.impl;
 
-
 import io.realworld.angular.conduit.dto.ArticleDTO;
-import io.realworld.angular.conduit.dto.response.ArticleResponse;
+import io.realworld.angular.conduit.dto.ArticleListDTO;
+import io.realworld.angular.conduit.exception.NotFoundException;
 import io.realworld.angular.conduit.mapper.ArticleMapper;
 import io.realworld.angular.conduit.model.Article;
 import io.realworld.angular.conduit.repository.ArticleRepository;
+import io.realworld.angular.conduit.repository.UserRepository;
 import io.realworld.angular.conduit.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -13,57 +14,37 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
+    private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
+    private final ArticleMapper articleMapper;
 
 
     @Override
-    public ResponseEntity<ArticleResponse> getArticles(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag) {
-        return null;
+    public ResponseEntity<ArticleDTO> findById(Long id) {
+        Article article = articleRepository.findById(id).orElseThrow(() -> new NotFoundException("Article not found"));
+        ArticleDTO dto = articleMapper.toDto(article);
+        return ResponseEntity.ok(dto);
     }
 
     @Override
-    public ResponseEntity<ArticleResponse> getArticleBySlag(String slug) {
-        int i = slug.lastIndexOf("-");
-        Long id = Long.valueOf(slug.substring(i + 1));
-
-        Optional<Article> optionalArticle = articleRepository.findById(id);
-        if (optionalArticle.isEmpty()) {
-            return ResponseEntity.badRequest().body(null);
-        }
-        //TODO change userId
-        boolean favorited = articleRepository.isFavorited(0L, id);
-        long favoritesCount = articleRepository.getFavoritesCount(id);
-        Article article = optionalArticle.get();
-        ArticleDTO articleDTO = ArticleMapper.toDto(article);
-        articleDTO.withFavorited(favorited);
-        articleDTO.withFavoritesCount(favoritesCount);
-        return ResponseEntity.ok(new ArticleResponse(articleDTO));
+    public ArticleListDTO findWithPagination(Integer limit, Integer offset) {
+        PageRequest pageRequest = PageRequest.of(offset/limit,limit, Sort.by("createdat"));
+        List<Article> content = articleRepository.findAll(pageRequest).getContent();
+        ArticleListDTO articleListDTO = new ArticleListDTO();
+        articleListDTO.setArticles(content.stream().map(articleMapper::toDto).toList());
+        articleListDTO.setSize(content.size());
+        return articleListDTO;
     }
 
     @Override
-    public ResponseEntity<ArticleResponse> getArticleComments(String slag) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ArticleResponse> addArticle(ArticleDTO articleDTO) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ArticleResponse> updateArticle(ArticleDTO articleDTO) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ArticleResponse> deleteArticle(Long id) {
-        return null;
+    public ResponseEntity<ArticleDTO> save(ArticleDTO articleDTO) {
+        Article save = articleRepository.save(articleMapper.toEntity(articleDTO));
+        save.setUser(userRepository.findByUsername("default").orElseThrow(() -> new NotFoundException("User not found")));
+        return ResponseEntity.ok(articleMapper.toDto(save));
     }
 }
