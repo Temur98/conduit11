@@ -1,4 +1,4 @@
-package io.realworld.angular.conduit.service.impl;
+package io.realworld.angular.conduit.mapper;
 
 import io.realworld.angular.conduit.dto.ArticleDTO;
 import io.realworld.angular.conduit.dto.Profile;
