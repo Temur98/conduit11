@@ -1,6 +1,7 @@
 package io.realworld.angular.conduit.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,11 +12,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "articles")
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String slag;
+    @NotEmpty
+    @Column(name = "title", nullable = false)
     private String title;
     private String description;
     private String body;
@@ -28,7 +32,9 @@ public class Article {
     private String updateAt;
     private Boolean favorited;
     private Long amountOfLikes;
-//    private Profile profile;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
 
 
 

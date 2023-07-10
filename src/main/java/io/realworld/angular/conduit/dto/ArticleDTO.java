@@ -1,9 +1,7 @@
 package io.realworld.angular.conduit.dto;
 
-import io.realworld.angular.conduit.model.Tag;
-import io.realworld.angular.conduit.model.User;
+import lombok.With;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public record ArticleDTO(
@@ -12,9 +10,13 @@ public record ArticleDTO(
         String title,
         String description,
         String body,
-        LocalDate createAt,
-        LocalDate updateAt,
-        List<Tag> tagList,
-        User user
+        List<TagDTO> tagList,
+        String createdAt,
+        String updateAt,
+        boolean author,
+        @With
+        long favorited,
+        @With
+        UserDTO favoritesCount
 ) {
 }
