@@ -1,5 +1,6 @@
 package uz.najottalim.javan6.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -7,6 +8,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -16,7 +19,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Service
 @EnableWebSecurity(debug = true)
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final JwtValidatorFilter jwtValidatorFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(
@@ -26,15 +31,19 @@ public class SecurityConfig {
                 configuration.setAllowedMethods(List.of("*"));
                 configuration.setAllowedHeaders(List.of("*"));
                 configuration.setMaxAge(3600L);
-                configuration.setExposedHeaders(List.of("authorization"));
+                configuration.setExposedHeaders(List.of("Authorization"));
                 configuration.setAllowCredentials(true);
                 return configuration;
             })
         );
 
         http.authorizeHttpRequests(
-            request -> request.anyRequest().permitAll()
+            request -> request.requestMatchers("/profiles/**","/user")
+                    .hasAuthority("user")
+                    .anyRequest().permitAll()
         );
+
+        http.addFilterBefore(jwtValidatorFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.csrf(AbstractHttpConfigurer::disable);
 

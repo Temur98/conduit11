@@ -3,6 +3,7 @@ package uz.najottalim.javan6.service;
 import org.springframework.http.ResponseEntity;
 import uz.najottalim.javan6.dto.articledto.ArticleResponse;
 import uz.najottalim.javan6.dto.articledto.ArticlesDto;
+import uz.najottalim.javan6.dto.commentdto.CommentResponse;
 import uz.najottalim.javan6.dto.commentdto.CommentsDto;
 
 import java.util.Optional;
@@ -13,4 +14,14 @@ public interface ArticleService {
     ResponseEntity<ArticleResponse> getArticleBySlug(String slug);
 
     ResponseEntity<CommentsDto> getArticleComments(String slug);
+
+    ResponseEntity<ArticlesDto> getArticlesByToken(Integer limit, Integer offset);
+
+    ResponseEntity<ArticleResponse> addArticle(ArticleResponse articleResponse);
+
+    ResponseEntity<ArticleResponse> likeArticle(String slug);
+
+    ResponseEntity<CommentResponse> addComment(String slug, CommentResponse commentResponse);
+
+    void deleteComment(String slug, Long id);
 }

@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface ArticleRepositoryExtension {
     List<Article> getArticlesPageable(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
+    void likeArticle(Long articleId,Long userId);
+    boolean isCurrentUserLiked(Long articleId,Long userId);
 }

@@ -28,4 +28,5 @@ public class ArticleDto {
     private Long favoritesCount;
     @JsonProperty(value = "author")
     private ProfileDto profileDto;
+    private List<ProfileDto> favoritedBy;
 }

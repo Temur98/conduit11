@@ -15,7 +15,7 @@ create table profile (
 
 alter table users add constraint unique_email unique (email);
 alter table users alter column password set DATA TYPE varchar;
-alter table profile alter column image_path set default 'https://api.realworld.io/images/smiley-cyrus.jpeg';
+alter table profile alter column image_path set default 'https://api.realworld.io/images/smiley-cyrus.jpeg' notnull ;
 
 create table article (
     id bigint generated always as IDENTITY primary key ,

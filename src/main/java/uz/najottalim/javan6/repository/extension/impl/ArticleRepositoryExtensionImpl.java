@@ -2,6 +2,7 @@ package uz.najottalim.javan6.repository.extension.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uz.najottalim.javan6.entity.Article;
@@ -34,7 +35,30 @@ public class ArticleRepositoryExtensionImpl implements ArticleRepositoryExtensio
             predicates.add(criteriaBuilder.equal(tagJoin.get("name"),value));
         });
 
-        CriteriaQuery<Article> cQuery = query.where(predicates.toArray(Predicate[]::new));
+
+        CriteriaQuery<Article> cQuery = query.where(predicates.toArray(Predicate[]::new))
+                .orderBy(criteriaBuilder.desc(root.get("updateAt")));
+
         return entityManager.createQuery(cQuery).setFirstResult(offset).setMaxResults(limit).getResultList();
+    }
+
+    @Override
+    @Transactional
+    public void likeArticle(Long articleId, Long userId) {
+        String query = "insert into likes values(?,?)";
+        entityManager.createNativeQuery(query)
+                .setParameter(1,articleId)
+                .setParameter(2,userId)
+                .executeUpdate();
+    }
+    @Transactional
+    @Override
+    public boolean isCurrentUserLiked(Long articleId,Long userId) {
+        String query = "select * from likes where article_id = ? and user_id = ?";
+        List resultList = entityManager.createNativeQuery(query)
+                .setParameter(1, articleId)
+                .setParameter(2, userId)
+                .getResultList();
+        return !resultList.isEmpty();
     }
 }

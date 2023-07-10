@@ -5,10 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.*;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class ErrorDto {
-    private String error;
+    private Map<String,List<String>> errors;
 }

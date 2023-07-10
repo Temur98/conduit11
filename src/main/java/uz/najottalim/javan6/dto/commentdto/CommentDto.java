@@ -1,6 +1,7 @@
 package uz.najottalim.javan6.dto.commentdto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonRootName("comment")
 public class CommentDto {
     private Long id;
     @JsonProperty(value = "author")

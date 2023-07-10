@@ -12,6 +12,8 @@ public interface TagRepository extends JpaRepository<Tag,Long> {
                     "join tag t on a.tag_id = t.id\n" +
                     "group by t.id,t.name\n" +
                     "order by count(*) desc\n" +
-                    "limit 20;",nativeQuery = true)
+                    "limit 10;",nativeQuery = true)
     List<String> getPopularTags();
+
+    Optional<Tag> findByName(String name);
 }

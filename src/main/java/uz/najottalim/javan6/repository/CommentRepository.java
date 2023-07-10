@@ -9,4 +9,5 @@ import java.util.*;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment,Long> {
     List<Comment> findAllByProfileId(Long id);
+    Optional<Comment> findByIdAndArticleId(Long id, Long articleId);
 }
