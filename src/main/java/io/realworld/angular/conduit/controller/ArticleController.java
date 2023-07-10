@@ -24,21 +24,25 @@ public class ArticleController {
                                                        @RequestParam Optional<String> tag){
         return articleService.getArticles(limit,offset,author,favorited,tag);
     }
-    @GetMapping("/{slag}")
-    public ResponseEntity<ArticleResponse> getById(@PathVariable String slag){
-        return articleService.getById(slag);
+    @GetMapping("/{slug}")
+    public ResponseEntity<ArticleResponse> getById(@PathVariable String slug){
+        return articleService.getById(slug);
     }
     @PostMapping
     public ResponseEntity<ArticleResponse> addArticle(@RequestBody ArticleDTO articleDTO){
         return articleService.addArticle(articleDTO);
     }
-    @GetMapping("/{slag}/comments")
-    public ResponseEntity<ArticleResponse> getArticleComments(@PathVariable String slag){
-        return articleService.getArticleComments(slag);
+    @GetMapping("/{slug}/comments")
+    public ResponseEntity<ArticleResponse> getArticleComments(@PathVariable String slug){
+        return articleService.getArticleComments(slug);
     }
     @PutMapping
     public ResponseEntity<ArticleResponse> updateArticle(@RequestBody ArticleDTO articleDTO){
         return articleService.updateArticle(articleDTO);
+    }
+    @DeleteMapping("/{slug}/favorite")
+    public void deleteFavorite(@PathVariable Long slug){
+        articleService.deleteArticle(slug); //ishi bor long emas string kelishi kerak
     }
 
     @DeleteMapping("/{id}")

@@ -17,6 +17,7 @@ public interface ArticleService {
     ResponseEntity<ArticleResponse> updateArticle(ArticleDTO articleDTO);
 
     ResponseEntity<ArticleResponse> deleteArticle(Long id);
+//    ResponseEntity<ArticleResponse> deleteFavorite()
     ResponseEntity<ArticleResponse> getArticles(@RequestParam Integer limit,
                                                 @RequestParam Integer offset,
                                                 @RequestParam Optional<String> author,
