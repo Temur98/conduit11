@@ -9,9 +9,12 @@ import io.realworld.angular.conduit.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ArticleMapper {
+
     private final TagRepository tagRepository;
 
     public ArticleDTO toDto(Article article) {
@@ -21,7 +24,7 @@ public class ArticleMapper {
                 article.getTitle(),
                 article.getDescription(),
                 article.getBody(),
-                article.getTagList().stream().map(Tag::getName).toList(),
+                article.getTagList().stream().map(Tag::getName).collect(Collectors.toList()),
                 article.getCreatedAt(),
                 article.getUpdatedAt(),
                 false,
@@ -35,16 +38,16 @@ public class ArticleMapper {
         );
     }
 
-    public Article toEntity(ArticleDTO articleDTO) {
+    public Article toEntity(ArticleDTO<? extends Object> articleDTO) {
         return articleDTO == null ? null : new Article(
-                articleDTO.getId(),
-                articleDTO.getSlug(),
-                articleDTO.getTitle(),
-                articleDTO.getDescription(),
-                articleDTO.getBody(),
-                articleDTO.getCreateAt(),
-                articleDTO.getUpdateAt(),
-                articleDTO.getTagList().stream().map(tag -> tagRepository.findByName(tag).orElseThrow(() -> new NotFoundException("Tag not found"))).toList(),
+                articleDTO.id(),
+                articleDTO.slug(),
+                articleDTO.title(),
+                articleDTO.description(),
+                articleDTO.body(),
+                articleDTO.createdAt(),
+                articleDTO.updateAt(),
+                articleDTO.tagList().stream().map(tag -> tagRepository.findByName(tag).orElseThrow(() -> new NotFoundException("Tag not found"))).toList(),
                 null
         );
     }

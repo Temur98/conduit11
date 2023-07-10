@@ -1,13 +1,15 @@
 package io.realworld.angular.conduit.dto.response;
 
 import io.realworld.angular.conduit.dto.ArticleDTO;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class ArticleResponse {
     private ArticleDTO article;
+    private List<ArticleDTO> articles;
+
 }

@@ -17,12 +17,12 @@ import java.util.Optional;
 public class ArticlesController {
     private final ArticleService articleService;
     @GetMapping()
-    public ResponseEntity<ArticleResponse> getArticles(@RequestParam Integer limit,
-                                                       @RequestParam Integer offset,
+    public ResponseEntity<ArticleResponse> getArticles(@RequestParam Optional<Integer> limit,
+                                                       @RequestParam Optional<Integer> offset,
                                                        @RequestParam Optional<String> author,
                                                        @RequestParam Optional<String> favorited,
                                                        @RequestParam Optional<String> tag){
-        return articleService.getArticles(limit,offset,author,favorited,tag);
+        return articleService.getAllArticles(limit,offset,author,favorited,tag);
     }
     @GetMapping("/{slag}")
     public ResponseEntity<ArticleResponse> getArticleBySlag(@PathVariable String slag){

@@ -4,12 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Profile {
-    private String username;
-    private String bio;
-    private String image;
-    private Boolean following;
+
+public record Profile (
+    String username,
+    String bio,
+    String image,
+    Boolean following){
+
 }
