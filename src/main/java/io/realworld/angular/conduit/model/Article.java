@@ -1,14 +1,17 @@
 package io.realworld.angular.conduit.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "articles")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,8 +20,8 @@ public class Article {
     private String title;
     private String description;
     private String body;
-    private LocalDate createAt;
-    private LocalDate updateAt;
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
     @ManyToMany
     @JoinTable(
             name = "article_tag",
