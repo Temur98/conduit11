@@ -24,8 +24,8 @@ public class ArticlesController {
             @RequestParam Optional<Integer> offset,
             @RequestParam Optional<String> author,
             @RequestParam Optional<String> favorited,
-            @RequestParam Optional<String> tag
-    ){
+            @RequestParam Optional<String> tag){
+
         return articleService.getAllArticles(limit, offset, author, favorited, tag);
     }
 

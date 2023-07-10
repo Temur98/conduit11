@@ -30,11 +30,9 @@ public class ArticleServiceImpl implements ArticleService {
         if(limit.isPresent() && offset.isPresent()) {
             pageRequest = PageRequest.of(offset.get() / limit.get(), limit.get());
             List<ArticleDTO> articleDTOList = articleRepository.findAll(pageRequest).stream().map(a -> articleMapper.toDto(a, articleRepository, userRepository)).toList();
-
             if (author.isPresent()) {
                 articleDTOList = articleDTOList.stream().filter(articleDTO -> articleDTO.author().userName().equals(author.get())).toList();
             }
-
             if (tag.isPresent()) {
                 articleDTOList = articleDTOList.stream().filter(articleDTO -> articleDTO.tagList().contains(tag)).toList();
             }
@@ -44,14 +42,9 @@ public class ArticleServiceImpl implements ArticleService {
             CommonResponse<List<ArticleDTO>> response = new CommonResponse<>();
             response.add("articles", articleDTOList);
             return ResponseEntity.ok(response);
-
         }
-
-
         throw new NotFoundException("Article Not found");
     }
-
-
 
     @Override
     public ResponseEntity<ArticleDTO> getArticleBySlag(String slug) {
@@ -69,26 +62,37 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ResponseEntity<ArticleDTO> updateArticle(ArticleDTO articleDTO) {
-        return null;
+        articleRepository.findById(articleDTO.id()).orElseThrow(() -> new NotFoundException("Article not found"));
+        Article save = articleRepository.save(articleMapper.toEntity(articleDTO));
+        return ResponseEntity.ok(articleMapper.toDto(save,articleRepository,userRepository));
     }
 
     @Override
     public ResponseEntity<ArticleDTO> updateArticleBySlag(String slag, ArticleDTO articleDTO) {
-        return null;
+        Long idBySlug = CommonService.getIdBySlug(slag);
+        articleRepository.findById(idBySlug).orElseThrow(() -> new NotFoundException("Article not found"));
+        Article save = articleRepository.save(articleMapper.toEntity(articleDTO));
+
+        return ResponseEntity.ok(articleMapper.toDto(save,articleRepository,userRepository));
     }
 
     @Override
     public ResponseEntity<ArticleDTO> addFavorite(String slug) {
-        return null;
+        Long idBySlug = CommonService.getIdBySlug(slug);
+        Long userId = 0L;
+        return articleRepository.addLike(idBySlug,userId);
     }
 
     @Override
     public void deleteFavorite(String slug) {
-
+        Long idBySlug = CommonService.getIdBySlug(slug);
+        Long userId = 0L;
+        articleRepository.removeLike(idBySlug,userId);
     }
 
     @Override
     public void deleteArticle(String slug) {
-
+        Long id = CommonService.getIdBySlug(slug);
+        articleRepository.delete(articleRepository.findById(id).orElseThrow(() -> new NotFoundException("Article not found")));
     }
 }
