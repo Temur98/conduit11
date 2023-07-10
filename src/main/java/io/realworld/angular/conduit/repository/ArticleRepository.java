@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article,Long> {
@@ -15,4 +17,7 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
             "from ARTICLES a join LIKES l on a.ID = l.ARTICLE_ID\n" +
             "where l.USER_ID = ? and a.ID = ?", nativeQuery = true)
     boolean isFavorited(Long userId, Long id);
+
+    Optional<Object> getArticlesPageable(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
+
 }

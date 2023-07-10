@@ -21,17 +21,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
+
+
     @Override
-    public ResponseEntity<ArticleResponse> getArticles(Optional<Integer> pageNum, Optional<Integer> size) {
-//        Pageable pageable = (Pageable) PageRequest.of(size.get()/pageNum.get(), size.get());
-//        return ResponseEntity.ok(
-//                new ArticleDTO(
-//                        articleRepository.findAll((Sort) pageable)
-//                                .stream()
-//                                .map(ArticleMapper::toDto)
-//                                .collect(Collectors.toList())
-//                )
-//        );
+    public ResponseEntity<ArticleResponse> getArticles(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag) {
         return null;
     }
 

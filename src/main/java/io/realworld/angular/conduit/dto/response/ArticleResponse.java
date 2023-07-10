@@ -10,6 +10,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ArticleResponse {
     private ArticleDTO article;
-
-
 }
