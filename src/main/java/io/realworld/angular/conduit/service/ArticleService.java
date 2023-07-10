@@ -7,17 +7,18 @@ import org.springframework.http.ResponseEntity;
 import java.util.Optional;
 
 public interface ArticleService {
-    ResponseEntity<ArticleDTO> findById(Long id);
-
-    ResponseEntity<ArticleResponse> getAllArticles(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
-
-    ResponseEntity<ArticleResponse> getArticleBySlag(String slag);
-
-    ResponseEntity<ArticleResponse> getArticleComments(String slag);
+    ResponseEntity<ArticleResponse> getArticleBySlag(String slug);
 
     ResponseEntity<ArticleResponse> addArticle(ArticleDTO articleDTO);
 
     ResponseEntity<ArticleResponse> updateArticle(ArticleDTO articleDTO);
 
-    ResponseEntity<ArticleResponse> deleteArticle(Long id);
+
+    ResponseEntity<ArticleResponse> updateArticleBySlag(String slag, ArticleDTO articleDTO);
+
+    ResponseEntity<ArticleResponse> addFavorite(String slug);
+
+    void deleteFavorite(String slug);
+
+    void deleteArticle(String slug);
 }

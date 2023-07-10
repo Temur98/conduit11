@@ -1,12 +1,12 @@
 package io.realworld.angular.conduit.mapper;
 
 import io.realworld.angular.conduit.dto.ArticleDTO;
-import io.realworld.angular.conduit.dto.Profile;
 import io.realworld.angular.conduit.exception.NotFoundException;
 import io.realworld.angular.conduit.model.Article;
 import io.realworld.angular.conduit.model.Tag;
 import io.realworld.angular.conduit.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -29,12 +29,7 @@ public class ArticleMapper {
                 article.getUpdatedAt(),
                 false,
                 1000L,
-                new Profile(
-                        article.getUser().getUsername(),
-                        article.getUser().getBio(),
-                        article.getUser().getImage(),
-                        false
-                )
+                null
         );
     }
 

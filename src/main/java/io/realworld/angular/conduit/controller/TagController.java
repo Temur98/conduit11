@@ -19,28 +19,9 @@ import java.util.List;
 public class TagController {
     private final TagService tagService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TagResponse> getById (@PathVariable Long id){
-        return tagService.getById(id);
-    }
-
     @GetMapping
-    public ResponseEntity<List<TagResponse>> getAll (){
+    public ResponseEntity<TagResponse> getAll (){
         return tagService.getAll();
-    }
-    @PostMapping
-    public ResponseEntity<TagResponse> addTag(@RequestBody TagDTO tagDTO){
-        return tagService.addTag(tagDTO);
-    }
-
-    @PostMapping
-    public ResponseEntity<TagResponse> updateTag(@RequestBody TagDTO tagDTO){
-        return tagService.updateTag(tagDTO);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<TagResponse> deleteTag(@PathVariable Long id){
-        return tagService.deleteTag(id);
     }
 
 }

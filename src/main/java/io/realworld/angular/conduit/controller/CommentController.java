@@ -9,35 +9,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/comments")
+@RequestMapping("/articles")
 @Slf4j
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CommentResponse> getById (@PathVariable Long id){
-        return commentService.getById(id);
+
+    @GetMapping("/{slug}/comments")
+    public ResponseEntity<CommentResponse> getCommentsBySlug(@PathVariable String slug){
+        return commentService.getCommentsBySlug(slug);
+    }
+    @PostMapping("/{slug}/comments")
+    public ResponseEntity<CommentResponse> addCommentBySlug(@PathVariable String slug, @RequestBody CommentDTO comment){
+        return commentService.addCommentBySlug(slug, comment);
     }
 
-    @GetMapping
-    public ResponseEntity<CommentResponse> getAll (){
-        return commentService.getAll();
+    @DeleteMapping("/{slug}/comments/{commentId}")
+    public void deleteComment(@PathVariable String slug, @PathVariable Long commentId){
+        commentService.deleteComment(slug, commentId);
     }
-    @PostMapping
-    public ResponseEntity<CommentResponse> addComment(@RequestBody CommentDTO commentDTO){
-        return commentService.addComment(commentDTO);
-   }
 
-   @PostMapping
-    public ResponseEntity<CommentResponse> updateComment(@RequestBody CommentDTO commentDTO){
-        return commentService.updateComment(commentDTO);
-   }
-
-   @DeleteMapping("/{id}")
-    public ResponseEntity<CommentResponse> deleteComment(@PathVariable Long id){
-        return commentService.deleteComment(id);
-   }
 
 
 }

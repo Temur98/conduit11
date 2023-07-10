@@ -8,11 +8,12 @@ import org.springframework.http.ResponseEntity;
 
 
 public interface UserService{
-    ResponseEntity<UserResponse> getById(Long id);
 
-    ResponseEntity<UserResponse> addUser(UserDTO userDTO);
+    ResponseEntity<UserResponse> registerUser(UserDTO userDTO);
 
     ResponseEntity<UserResponse> updateUser(UserDTO userDTO);
 
-    ResponseEntity<UserResponse> deleteUser(Long id);
+    ResponseEntity<UserResponse> loginUser(UserDTO user);
+
+    ResponseEntity<UserResponse> getCurrentUser();
 }

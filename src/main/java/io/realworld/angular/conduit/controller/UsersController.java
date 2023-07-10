@@ -9,29 +9,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users")
 @Slf4j
 @RequiredArgsConstructor
 public class UsersController {
     private final UserService userService;
-    @GetMapping
-    public ResponseEntity<UserResponse> getById(@PathVariable Long id){
-        return userService.getById(id);
+
+    @PostMapping("/users/login")
+    public ResponseEntity<UserResponse> loginUser(@RequestBody UserDTO user){
+        return userService.loginUser(user);
     }
 
-    @PostMapping
-    public ResponseEntity<UserResponse> addUser(@RequestBody UserDTO userDTO){
-        return userService.addUser(userDTO);
+    @PostMapping("/users")
+    public ResponseEntity<UserResponse> registerUser(@RequestBody UserDTO user){
+        return userService.registerUser(user);
     }
 
-    @PutMapping
+    @GetMapping("/user")
+    public ResponseEntity<UserResponse> getCurrentUser(){
+        return userService.getCurrentUser();
+    }
+
+    @PutMapping("/user")
     public ResponseEntity<UserResponse> updateUser(@RequestBody UserDTO userDTO){
         return userService.updateUser(userDTO);
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<UserResponse> deleteUser(@PathVariable Long id){
-        return userService.deleteUser(id);
-    }
-
 }

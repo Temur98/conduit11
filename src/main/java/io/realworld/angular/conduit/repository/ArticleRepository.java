@@ -18,6 +18,6 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
             "where l.USER_ID = ? and a.ID = ?", nativeQuery = true)
     boolean isFavorited(Long userId, Long id);
 
-    Optional<Object> getArticlesPageable(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
+//    Optional<Object> getArticlesPageable(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
 
 }

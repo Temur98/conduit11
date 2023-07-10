@@ -16,23 +16,27 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ArticlesController {
     private final ArticleService articleService;
-    @GetMapping()
-    public ResponseEntity<ArticleResponse> getArticles(@RequestParam Optional<Integer> limit,
-                                                       @RequestParam Optional<Integer> offset,
-                                                       @RequestParam Optional<String> author,
-                                                       @RequestParam Optional<String> favorited,
-                                                       @RequestParam Optional<String> tag){
-        return articleService.getAllArticles(limit,offset,author,favorited,tag);
-    }
-    @GetMapping("/{slag}")
-    public ResponseEntity<ArticleResponse> getArticleBySlag(@PathVariable String slag){
-        return articleService.getArticleBySlag(slag);
+
+    @GetMapping("/{slug}")
+    public ResponseEntity<ArticleResponse> getArticleBySlag(@PathVariable String slug){
+        return articleService.getArticleBySlag(slug);
     }
 
-    @GetMapping("/{slag}/comments")
-    public ResponseEntity<ArticleResponse> getArticleComments(@PathVariable String slag){
-        return articleService.getArticleComments(slag);
+    @PutMapping("/{slug}")
+    public ResponseEntity<ArticleResponse> updateArticleBySlag(@PathVariable String slug, @RequestBody ArticleDTO articleDTO){
+        return articleService.updateArticleBySlag(slug, articleDTO);
     }
+
+    @PostMapping("/{slug}/favorite")
+    public ResponseEntity<ArticleResponse> addFavorite(@PathVariable String slug){
+        return articleService.addFavorite(slug);
+    }
+
+    @DeleteMapping("/{slug}/favorite")
+    public void deleteFavorite(@PathVariable String slug){
+        articleService.deleteFavorite(slug);
+    }
+
 
     @PostMapping
     public ResponseEntity<ArticleResponse> addArticle(@RequestBody ArticleDTO articleDTO){
@@ -44,8 +48,8 @@ public class ArticlesController {
         return articleService.updateArticle(articleDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ArticleResponse> deleteArticle(@PathVariable Long id){
-        return articleService.deleteArticle(id);
+    @DeleteMapping("/{slug}")
+    public void deleteArticle(@PathVariable String slug){
+        articleService.deleteArticle(slug);
     }
 }

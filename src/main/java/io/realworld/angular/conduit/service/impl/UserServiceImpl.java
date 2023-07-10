@@ -20,13 +20,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public ResponseEntity<UserResponse> getById(Long id) {
-
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<UserResponse> addUser(UserDTO userDTO) {
+    public ResponseEntity<UserResponse> registerUser(UserDTO userDTO) {
         return null;
     }
 
@@ -36,7 +30,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<UserResponse> deleteUser(Long id) {
+    public ResponseEntity<UserResponse> loginUser(UserDTO user) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<UserResponse> getCurrentUser() {
         return null;
     }
 }

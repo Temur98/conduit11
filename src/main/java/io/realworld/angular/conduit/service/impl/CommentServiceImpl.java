@@ -11,28 +11,19 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
+
     @Override
-    public ResponseEntity<CommentResponse> getById(Long id) {
+    public ResponseEntity<CommentResponse> getCommentsBySlug(String slug) {
         return null;
     }
 
     @Override
-    public ResponseEntity<CommentResponse> getAll() {
+    public ResponseEntity<CommentResponse> addCommentBySlug(String slug, CommentDTO comment) {
         return null;
     }
 
     @Override
-    public ResponseEntity<CommentResponse> addComment(CommentDTO commentDTO) {
-        return null;
-    }
+    public void deleteComment(String slug, Long commentId) {
 
-    @Override
-    public ResponseEntity<CommentResponse> updateComment(CommentDTO commentDTO) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<CommentResponse> deleteComment(Long id) {
-        return null;
     }
 }

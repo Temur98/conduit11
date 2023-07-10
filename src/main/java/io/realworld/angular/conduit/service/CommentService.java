@@ -5,13 +5,9 @@ import io.realworld.angular.conduit.dto.response.CommentResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface CommentService {
-    ResponseEntity<CommentResponse> getById(Long id);
+    ResponseEntity<CommentResponse> getCommentsBySlug(String slug);
 
-    ResponseEntity<CommentResponse> getAll();
+    ResponseEntity<CommentResponse> addCommentBySlug(String slug, CommentDTO comment);
 
-    ResponseEntity<CommentResponse> addComment(CommentDTO commentDTO);
-
-    ResponseEntity<CommentResponse> updateComment(CommentDTO commentDTO);
-
-    ResponseEntity<CommentResponse> deleteComment(Long id);
+    void deleteComment(String slug, Long commentId);
 }
