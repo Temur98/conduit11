@@ -56,11 +56,6 @@ public class ArticleController {
     public ResponseEntity<CommentListDto> getArticleComments(@PathVariable String slug){
         return articleService.getArticleComments(slug);
     }
-    @GetMapping("/feed")
-    public ResponseEntity<ArticleDto> getArticlesByToken(@RequestParam Integer limit,
-                                                          @RequestParam Integer offset){
-        return articleService.getArticlesByToken(limit,offset);
-    };
 
     @PostMapping("/")
     public ResponseEntity<ArticleResponse> addArticle(@RequestBody ArticleResponse articleResponse){

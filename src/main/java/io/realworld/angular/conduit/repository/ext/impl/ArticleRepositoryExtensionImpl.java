@@ -8,13 +8,9 @@ import io.realworld.angular.conduit.repository.UserRepository;
 import io.realworld.angular.conduit.repository.ext.ArticleRepositoryExtension;
 import io.realworld.angular.conduit.service.mapper.ArticleMapper;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +20,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ArticleRepositoryExtensionImpl implements ArticleRepositoryExtension {
     private final EntityManager entityManager;
-    private final ArticleMapper articleMapper;
-    private final UserRepository userRepository;
     public List<Article> getArticleListPageable(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag)
     {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
