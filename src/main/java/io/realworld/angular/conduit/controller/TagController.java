@@ -2,8 +2,10 @@ package io.realworld.angular.conduit.controller;
 
 import io.realworld.angular.conduit.dto.ResponseDto;
 import io.realworld.angular.conduit.dto.TagDto;
+import io.realworld.angular.conduit.dto.responseList.TagListDto;
 import io.realworld.angular.conduit.service.TagService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,5 +39,9 @@ public class TagController {
     @GetMapping("get-all-tag")
     public ResponseDto<List<TagDto>> getAllTag() {
         return tagService.getAllTag();
+    }
+    @GetMapping()
+    public ResponseEntity<TagListDto> getPopularTags(){
+        return tagService.getPopularTags();
     }
 }

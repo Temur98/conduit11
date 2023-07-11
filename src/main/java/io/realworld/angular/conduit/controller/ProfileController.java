@@ -2,8 +2,10 @@ package io.realworld.angular.conduit.controller;
 
 import io.realworld.angular.conduit.dto.ProfileDto;
 import io.realworld.angular.conduit.dto.ResponseDto;
+import io.realworld.angular.conduit.dto.response.ProfileResponse;
 import io.realworld.angular.conduit.service.ProfileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,5 +34,18 @@ public class ProfileController {
     @GetMapping("get-all-profile")
     public ResponseDto<List<ProfileDto>> getAllProfile(){
         return profileService.getAllProfile();
+    }
+    @GetMapping("/{username}")
+    public ResponseEntity<ProfileResponse> getProfileByUsername(@PathVariable String username){
+        return profileService.getProfileByUsername(username);
+    }
+    @PostMapping("/{username}/follow")
+    public ResponseEntity<ProfileResponse> addFollower(@PathVariable String username){
+        return profileService.addFollower(username);
+    }
+
+    @DeleteMapping("/{username}/follow")
+    public ResponseEntity<ProfileResponse> deleteFollower(@PathVariable String username){
+        return profileService.deleteFollower(username);
     }
 }

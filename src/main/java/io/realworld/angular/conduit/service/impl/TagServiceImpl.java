@@ -2,11 +2,13 @@ package io.realworld.angular.conduit.service.impl;
 
 import io.realworld.angular.conduit.dto.ResponseDto;
 import io.realworld.angular.conduit.dto.TagDto;
+import io.realworld.angular.conduit.dto.responseList.TagListDto;
 import io.realworld.angular.conduit.model.Tag;
 import io.realworld.angular.conduit.repository.TagRepository;
 import io.realworld.angular.conduit.service.TagService;
 import io.realworld.angular.conduit.service.mapper.TagMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -117,5 +119,9 @@ public class TagServiceImpl implements TagService {
                 .message("OK")
                 .data(tagRepository.findAll().stream().map(tagMapper::toDto).toList())
                 .build();
+    }
+    @Override
+    public ResponseEntity<TagListDto> getPopularTags() {
+        return ResponseEntity.ok(new TagListDto(tagRepository.getPopularTags()));
     }
 }
