@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("article")
+@RequestMapping("articles")
 @RequiredArgsConstructor
 public class ArticleController {
     private final ArticleService articleService;
@@ -56,13 +56,6 @@ public class ArticleController {
     public ResponseEntity<CommentListDto> getArticleComments(@PathVariable String slug){
         return articleService.getArticleComments(slug);
     }
-
-    @GetMapping("/feed")
-    public ResponseEntity<ArticleDto> getArticlesByToken(@RequestParam Integer limit,
-                                                          @RequestParam Integer offset){
-        return articleService.getArticlesByToken(limit,offset);
-    };
-
     @PostMapping("/")
     public ResponseEntity<ArticleResponse> addArticle(@RequestBody ArticleResponse articleResponse){
         return articleService.addArticle(articleResponse);

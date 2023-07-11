@@ -11,11 +11,13 @@ import java.util.List;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article,Long>, ArticleRepositoryExtension {
-    @Query(
-            value = "select count(*) from likes where article_id = ?1",nativeQuery = true
-    )
-    Long getLikesCount(Long article_id);
-    List<Article> findAllByProfile_UserEmail(String email);
+    @Query(value = "select count(*) from ARTICLES a join LIKES l on a.ID = l.ARTICLE_ID where a.id = ?", nativeQuery = true)
+    long getFavoritesCount(Long id);
+
+    @Query(value = "select case when count(*) > 0 then true else false end\n" +
+            "from ARTICLES a join LIKES l on a.ID = l.ARTICLE_ID\n" +
+            "where l.USER_ID = ? and a.ID = ?", nativeQuery = true)
+    boolean isFavorited(Long userId, Long id);
 
 
 }
