@@ -1,35 +1,54 @@
 package io.realworld.angular.conduit.mapper;
 
 import io.realworld.angular.conduit.dto.ArticleDTO;
+import io.realworld.angular.conduit.dto.ProfileDTO;
 import io.realworld.angular.conduit.model.Article;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import io.realworld.angular.conduit.repository.ArticleRepository;
+import io.realworld.angular.conduit.repository.UserRepository;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
-import java.util.stream.Collectors;
+@Mapper(componentModel = "spring")
 
-@Component
-@RequiredArgsConstructor
-public class ArticleMapper {
-    public static Article toEntity(ArticleDTO articleDTO){
-        if(articleDTO == null) return null;
-        return null;
+public interface ArticleMapper {
+    @Mapping(target = "slug", source = "article", qualifiedByName = "toDtoSlug")
+    @Mapping(target = "favorited", source = "article", qualifiedByName = "toDtoFavorited")
+    @Mapping(target = "favoritesCount", source = "article", qualifiedByName = "toDtoFavoritesCount")
+    @Mapping(target = "author", source = "article", qualifiedByName = "toDtoAuthor")
+    ArticleDTO toDto(Article article, @Context ArticleRepository articleRepository, @Context UserRepository userRepository);
+
+    Article toEntity(ArticleDTO articleDTO);
+
+    @Named("toDtoSlug")
+    default String toDtoSlug(Article article){
+        if (article == null) return null;
+        return article.getTitle().concat("-").concat(String.valueOf(article.getId()));
     }
-    public static ArticleDTO toDto(Article article){
-        if(article == null) return null;
-        return new ArticleDTO(
-                article.getId(),
-                article.getTitle().concat("-").concat(String.valueOf(article.getId())),
-                article.getTitle(),
-                article.getDescription(),
-                article.getBody(),
-                article.getTagList().stream()
-                        .map(TagMapper::toDTO)
-                        .collect(Collectors.toList()),
-                article.getCreatedAt(),
-                article.getUpdateAt(),
-                false,
-                0L,
-                UserMapper.toDto(article.getAuthor())
+
+    @Named("toDtoFavorited")
+    default boolean toDtoFavorited(@Context ArticleRepository articleRepository, Article article){
+        if (article == null) return false;
+        Long id = article.getId();
+        return articleRepository.isFavorited(0L, id);
+    }
+
+    @Named("toDtoFavoritesCount")
+    default Long toDtoFavoritesCount(@Context ArticleRepository articleRepository, Article article){
+        if (article == null) return null;
+        return articleRepository.getFavoritesCount(article.getId());
+    }
+
+    @Named("toDtoAuthor")
+    default ProfileDTO toDtoAuthor(@Context UserRepository userRepository, Article article){
+        if (article == null) return null;
+        return new ProfileDTO(
+                article.getAuthor().getUsername(),
+                article.getAuthor().getBio(),
+                article.getAuthor().getImage(),
+                userRepository.isFollowedToArticleOwner(article.getAuthor().getId(), 0L)
         );
     }
+
 }

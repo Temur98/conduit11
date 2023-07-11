@@ -1,9 +1,11 @@
 package io.realworld.angular.conduit.dto;
 
-import lombok.With;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
+import java.time.LocalDate;
 import java.util.List;
 
+@JsonRootName("article")
 public record ArticleDTO(
         Long id,
         String slug,
@@ -11,12 +13,11 @@ public record ArticleDTO(
         String description,
         String body,
         List<TagDTO> tagList,
-        String createdAt,
-        String updateAt,
-        boolean author,
-        @With
-        long favorited,
-        @With
-        UserDTO favoritesCount
+        LocalDate createdAt,
+        LocalDate updateAt,
+        Boolean favorited,
+        Long favoritesCount,
+        ProfileDTO author
 ) {
+
 }

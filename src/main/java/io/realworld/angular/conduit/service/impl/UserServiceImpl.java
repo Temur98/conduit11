@@ -2,7 +2,6 @@ package io.realworld.angular.conduit.service.impl;
 
 
 import io.realworld.angular.conduit.dto.UserDTO;
-import io.realworld.angular.conduit.dto.response.UserResponse;
 import io.realworld.angular.conduit.repository.UserRepository;
 import io.realworld.angular.conduit.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -14,23 +13,24 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
+
     @Override
-    public ResponseEntity<UserResponse> getById(Long id) {
+    public ResponseEntity<UserDTO> registerUser(UserDTO userDTO) {
         return null;
     }
 
     @Override
-    public ResponseEntity<UserResponse> addUser(UserDTO userDTO) {
+    public ResponseEntity<UserDTO> updateUser(UserDTO userDTO) {
         return null;
     }
 
     @Override
-    public ResponseEntity<UserResponse> updateUser(UserDTO userDTO) {
+    public ResponseEntity<UserDTO> loginUser(UserDTO user) {
         return null;
     }
 
     @Override
-    public ResponseEntity<UserResponse> deleteUser(Long id) {
+    public ResponseEntity<UserDTO> getCurrentUser() {
         return null;
     }
 }
