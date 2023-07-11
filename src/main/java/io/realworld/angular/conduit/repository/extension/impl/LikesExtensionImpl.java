@@ -17,8 +17,10 @@ public class LikesExtensionImpl implements LikesExtension {
 
     @Override
     public Integer addLike(Long articleId, Long userId) {
-        return entityManager.createNativeQuery("INSERT INTO LIKES (ARTICLE_ID, USER_ID) VALUES (?1,?2)")
+        entityManager.createNativeQuery("INSERT INTO LIKES (ARTICLE_ID, USER_ID) VALUES (?1,?2)")
                 .setParameter(1, articleId).setParameter(2, userId).executeUpdate();
+
+        return 1;
     }
 
     @Override

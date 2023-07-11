@@ -5,6 +5,7 @@ import io.realworld.angular.conduit.dto.CommonResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ArticleService {
@@ -12,7 +13,7 @@ public interface ArticleService {
 
     ResponseEntity<ArticleDTO> getArticleBySlag(String slug);
 
-    ResponseEntity<ArticleDTO> addArticle(ArticleDTO articleDTO);
+    ResponseEntity<Map<String,ArticleDTO>> addArticle(Map<String,ArticleDTO> articleDTO);
 
     ResponseEntity<ArticleDTO> updateArticle(ArticleDTO articleDTO);
 

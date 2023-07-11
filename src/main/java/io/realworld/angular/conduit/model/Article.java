@@ -12,7 +12,6 @@ import java.util.List;
 @Table(name = "articles")
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +28,14 @@ public class Article {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<Tag> tagList;
+
+    @ManyToMany
+    @JoinTable(
+            name = "likes",
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> users;
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;

@@ -1,18 +1,12 @@
 package io.realworld.angular.conduit.repository.extension.impl;
 
-import io.realworld.angular.conduit.dto.ArticleDTO;
-import io.realworld.angular.conduit.exception.NotFoundException;
-import io.realworld.angular.conduit.mapper.ArticleMapperWithoutRepositories;
 import io.realworld.angular.conduit.model.Article;
-import io.realworld.angular.conduit.repository.UserRepository;
+import io.realworld.angular.conduit.model.Tag;
+import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.repository.extension.ArticleExtension;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -21,52 +15,50 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class ArticleExtensionImpl implements ArticleExtension {
-    private final ArticleMapperWithoutRepositories articleMapper;
-    private final UserRepository userRepository;
     private final EntityManager entityManager;
-
-
-    @Override
-    public List<ArticleDTO> getAllArticles(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag) {
+    public List<Article> getArticlesPageable(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Article> query = criteriaBuilder.createQuery(Article.class);
         Root<Article> root = query.from(Article.class);
+
         List<Predicate> predicates = new ArrayList<>();
-//
-        author.ifPresent(auth ->
-            predicates.add(criteriaBuilder.equal(
-                    root.get("author").get("id"), userRepository.findByUsername(auth).orElseThrow(() -> new NotFoundException("User not found")).getId()
-            ))
-        );
 
-        favorited.ifPresent(fav -> {
-            List<Predicate> likePredicate = new ArrayList<>();
-            Long userId = userRepository.findByUsername(fav).orElseThrow(() -> new NotFoundException("User not found")).getId();
+        author.ifPresent(value->predicates.add(criteriaBuilder.equal(root.get("author").get("username"),value)));
 
-            Query query1 = entityManager.createNativeQuery("SELECT ARTICLE_ID FROM LIKES WHERE USER_ID = ?1", Object.class).setParameter(1, userId);
-            List<Long> resultList = (List<Long>) query1.getResultList();
-
-            resultList.forEach(id -> likePredicate.add(criteriaBuilder.equal(
-                                        root.get("id"),
-                                        id
-                                     ))
-            );
-            predicates.add(criteriaBuilder.or(likePredicate.toArray(Predicate[]::new)));
+        favorited.ifPresent(value -> {
+            ListJoin<Article, User> profileJoin = root.joinList("likes");
+            predicates.add(criteriaBuilder.equal(profileJoin.get("username"),value));
         });
 
-        query.select(root).where(criteriaBuilder.or(predicates.toArray(Predicate[]::new)));
-
-        TypedQuery<Article> typedQuery = entityManager.createQuery(query);
-
-        if (limit.isPresent() && offset.isPresent()){
-            typedQuery.setFirstResult(offset.get())
-                    .setMaxResults(limit.get()).getResultList();
-        }
+        tag.ifPresent(value->{
+            ListJoin<Article, Tag> tagJoin = root.joinList("tags");
+            predicates.add(criteriaBuilder.equal(tagJoin.get("name"),value));
+        });
 
 
-        return typedQuery.getResultList()
-                .stream()
-                .map(articleMapper::toDto)
-                .toList();
+        CriteriaQuery<Article> cQuery = query.where(predicates.toArray(Predicate[]::new))
+                .orderBy(criteriaBuilder.desc(root.get("updatedAt")));
+
+        return entityManager.createQuery(cQuery).setFirstResult(offset).setMaxResults(limit).getResultList();
+    }
+
+    @Override
+    @Transactional
+    public void likeArticle(Long articleId, Long userId) {
+        String query = "insert into likes values(?,?)";
+        entityManager.createNativeQuery(query)
+                .setParameter(1,articleId)
+                .setParameter(2,userId)
+                .executeUpdate();
+    }
+    @Transactional
+    @Override
+    public boolean isCurrentUserLiked(Long articleId,Long userId) {
+        String query = "select * from likes where article_id = ? and user_id = ?";
+        List resultList = entityManager.createNativeQuery(query)
+                .setParameter(1, articleId)
+                .setParameter(2, userId)
+                .getResultList();
+        return !resultList.isEmpty();
     }
 }
