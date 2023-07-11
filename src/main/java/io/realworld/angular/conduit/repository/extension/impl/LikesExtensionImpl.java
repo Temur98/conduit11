@@ -28,12 +28,13 @@ public class LikesExtensionImpl implements LikesExtension {
 
     @Override
     public Long likes(Long idBySlug, Long userId) {
-        Query query = entityManager.createNativeQuery("select * from ARTICLES a join LIKES l on a.ID = l.ARTICLE_ID where a.id = ?", Tuple.class);
-        List<Tuple> likes = (List<Tuple>) query.getResultList();
-
-        likes.stream()
-                .map()
-
+//        Query query = entityManager.createNativeQuery("select * from ARTICLES a join LIKES l on a.ID = l.ARTICLE_ID where a.id = ?", Tuple.class);
+//        List<Tuple> likes = (List<Tuple>) query.getResultList();
+//
+//        likes.stream()
+//                .map()
+//
+//        return null;
         return null;
     }
 
