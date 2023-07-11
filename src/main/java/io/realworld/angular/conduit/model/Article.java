@@ -16,7 +16,7 @@ public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String slug;
+
     private String title;
     private String description;
     private String body;
@@ -32,4 +32,5 @@ public class Article {
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;
+
 }

@@ -9,12 +9,14 @@ import io.realworld.angular.conduit.repository.ArticleRepository;
 import io.realworld.angular.conduit.repository.UserRepository;
 import io.realworld.angular.conduit.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,29 +28,10 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ResponseEntity<CommonResponse<List<ArticleDTO>>> getAllArticles(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag) {
-        PageRequest pageRequest = null;
-        if(limit.isPresent() && offset.isPresent()) {
-            pageRequest = PageRequest.of(offset.get() / limit.get(), limit.get());
-            List<ArticleDTO> articleDTOList = articleRepository.findAll(pageRequest).stream().map(a -> articleMapper.toDto(a, articleRepository, userRepository)).toList();
-
-            if (author.isPresent()) {
-                articleDTOList = articleDTOList.stream().filter(articleDTO -> articleDTO.author().userName().equals(author.get())).toList();
-            }
-
-            if (tag.isPresent()) {
-                articleDTOList = articleDTOList.stream().filter(articleDTO -> articleDTO.tagList().contains(tag)).toList();
-            }
-            if(favorited.isPresent()){
-                articleDTOList = articleDTOList.stream().filter(ArticleDTO::favorited).toList();
-            }
-            CommonResponse<List<ArticleDTO>> response = new CommonResponse<>();
-            response.add("articles", articleDTOList);
-            return ResponseEntity.ok(response);
-
-        }
-
-
-        throw new NotFoundException("Article Not found");
+        List<ArticleDTO> allArticles = articleRepository.getAllArticles(limit, offset, author, favorited, tag);
+        CommonResponse commonResponse = new CommonResponse<>();
+        commonResponse.add("articles", allArticles);
+        return ResponseEntity.ok(commonResponse);
     }
 
 
