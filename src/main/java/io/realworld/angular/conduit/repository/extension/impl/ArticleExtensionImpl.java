@@ -35,7 +35,7 @@ public class ArticleExtensionImpl implements ArticleExtension {
 //
         author.ifPresent(auth ->
             predicates.add(criteriaBuilder.equal(
-                    root.get("author"), userRepository.findByUsername(auth).orElseThrow(() -> new NotFoundException("User not found"))
+                    root.get("author").get("id"), userRepository.findByUsername(auth).orElseThrow(() -> new NotFoundException("User not found")).getId()
             ))
         );
 
