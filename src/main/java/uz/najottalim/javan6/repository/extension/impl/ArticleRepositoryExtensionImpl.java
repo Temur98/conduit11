@@ -61,4 +61,27 @@ public class ArticleRepositoryExtensionImpl implements ArticleRepositoryExtensio
                 .getResultList();
         return !resultList.isEmpty();
     }
+
+    @Override
+    public List<Article> getArticlesByFollower(Long id,Integer limit, Integer offset) {
+        String query = "select a.* from article a where a.profile_id in\n" +
+                "                        (select user_id from followers where follower_id = ?) " +
+                "order by a.update_at desc ";
+        return entityManager.createNativeQuery(query,Article.class)
+                .setParameter(1,id)
+                .setMaxResults(limit)
+                .setFirstResult(offset)
+                .getResultList();
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteLike(Long userId, Long articleId) {
+        String query = "delete from likes where article_id = ? and user_id = ?";
+        entityManager.createNativeQuery(query)
+                .setParameter(1,articleId)
+                .setParameter(2,userId)
+                .executeUpdate();
+    }
 }

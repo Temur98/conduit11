@@ -25,10 +25,9 @@ public class ArticleMapper {
     private final ProfileRepository profileRepository;
 
     public ArticleDto toDto(Article article){
-
-        return new ArticleDto(
+        ArticleDto articleDto = new ArticleDto(
                 article.getId(),
-                article.getTitle().replace(" ","-")+"-"+article.getId(),
+                article.getTitle().replace(" ", "-") + "-" + article.getId(),
                 article.getTitle(),
                 article.getDescription(),
                 article.getBody(),
@@ -40,6 +39,13 @@ public class ArticleMapper {
                 profileMapper.toDto(article.getProfile()),
                 null
         );
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        profileRepository.findByUserEmail(authentication.getName())
+                        .ifPresent(value -> {
+                            articleDto.setFavorite(articleRepository.isCurrentUserLiked(article.getId(),value.getId()));
+                        });
+        return articleDto;
     }
 
     public Article toEntity(ArticleDto articleDto , Profile profile){

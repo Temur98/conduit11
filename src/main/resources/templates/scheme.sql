@@ -38,14 +38,17 @@ alter table tag add constraint unique_tag_name unique (name);
 create table article_tag(
     article_id bigint,
     tag_id bigint,
-    foreign key (article_id) references article(id),
+    constraint article_tag_cons
+    foreign key (article_id) references article(id) on delete cascade ,
     foreign key (tag_id) references tag(id)
 );
+
 
 create table likes(
     article_id bigint,
     user_id bigint,
-    foreign key  (article_id) references article(id),
+    constraint likes_cons
+    foreign key  (article_id) references article(id) on delete cascade ,
     foreign key (user_id) references profile(id)
 );
 
@@ -59,6 +62,16 @@ create table comment(
     body text,
     create_at timestamp,
     update_at timestamp,
-    foreign key (profile_id) references profile(id),
+    constraint comment_cons
+    foreign key (profile_id) references profile(id) on DELETE cascade ,
     foreign key (article_id) references article(id)
+);
+
+alter table comment add constraint comment_article_cons foreign key (article_id) references article(id) on DELETE cascade ;
+
+create table followers(
+    user_id bigint,
+    follower_id bigint,
+    foreign key (user_id) references profile(id),
+    foreign key (follower_id) references profile(id)
 )

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import uz.najottalim.javan6.customexseptions.NoResourceFoundException;
 import uz.najottalim.javan6.dto.articledto.ArticleDto;
 import uz.najottalim.javan6.dto.articledto.ArticleResponse;
@@ -75,9 +76,10 @@ public class ArticleServiceImpl implements ArticleService {
     public ResponseEntity<ArticlesDto> getArticlesByToken(Integer limit, Integer offset) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<Article> results = articleRepository.findAllByProfile_UserEmail(authentication.getName());
-
-        return ResponseEntity.ok(new ArticlesDto(results
+        Profile user = profileRepository.findByUserEmail(authentication.getName())
+                .orElseThrow(() -> new NoResourceFoundException(" user not found"));
+        List<Article> articlesByFollower = articleRepository.getArticlesByFollower(user.getId(), limit, offset);
+        return ResponseEntity.ok(new ArticlesDto(articlesByFollower
                 .stream()
                 .map(articleMapper::toDto)
                 .collect(Collectors.toList()))
@@ -90,8 +92,10 @@ public class ArticleServiceImpl implements ArticleService {
         LocalDateTime now = LocalDateTime.now();
         articleResponse.getArticle().setCreatedAt(now);
         articleResponse.getArticle().setUpdatedAt(now);
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String name = authentication.getName();
+
         Profile profile = profileRepository.findByUserEmail(name)
                 .orElseThrow(() -> new NoResourceFoundException("profile not found"));
 
@@ -153,4 +157,29 @@ public class ArticleServiceImpl implements ArticleService {
 
         commentRepository.delete(comment);
     }
+
+    @Override
+    public ResponseEntity<ArticleResponse> deleteLike(String slug) {
+        Long articleId = Long.parseLong(slug.substring(slug.lastIndexOf("-")+1));
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Profile user = profileRepository.findByUserEmail(email)
+                .orElseThrow(() -> new NoResourceFoundException("user not found"));
+
+        articleRepository.deleteLike(user.getId(),articleId);
+        return null;
+    }
+
+    @Override
+    public void deleteArticle(String slug) {
+        Long id = Long.parseLong(slug.substring(slug.lastIndexOf("-")+1));
+
+        articleRepository.findById(id)
+                .orElseThrow(()-> new NoResourceFoundException(" article not found"));
+
+        articleRepository.deleteById(id);
+    }
+
+
 }

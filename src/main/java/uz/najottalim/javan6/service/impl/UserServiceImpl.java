@@ -63,9 +63,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User save = userRepository.save(userMapper.toEntity(userResponse.getUser()));
 
         Profile profile = new Profile(
-                null,"", "https://api.realworld.io/images/smiley-cyrus.jpeg", false,save
+                null,"", "https://st2.depositphotos.com/25790974/44392/v/600/depositphotos_443928634-stock-illustration-smile-happy-face-vector-design.jpg", false,save
         );
         profileRepository.save(profile);
+        Authentication auth = new UsernamePasswordAuthenticationToken
+                (save.getEmail(), null,List.of(new SimpleGrantedAuthority("user")));
+        SecurityContextHolder.getContext().setAuthentication(auth);
         return ResponseEntity.ok( new UserResponse(userMapper.toDto(save)));
     }
     @Override

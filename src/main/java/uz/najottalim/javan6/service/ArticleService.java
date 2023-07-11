@@ -24,4 +24,8 @@ public interface ArticleService {
     ResponseEntity<CommentResponse> addComment(String slug, CommentResponse commentResponse);
 
     void deleteComment(String slug, Long id);
+
+    ResponseEntity<ArticleResponse> deleteLike(String slug);
+
+    void deleteArticle(String slug);
 }

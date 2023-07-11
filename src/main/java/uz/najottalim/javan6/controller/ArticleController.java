@@ -49,6 +49,10 @@ public class ArticleController {
     public ResponseEntity<ArticleResponse> likeArticle(@PathVariable String slug){
         return articleService.likeArticle(slug);
     }
+    @DeleteMapping("/{slug}/favorite")
+    public ResponseEntity<ArticleResponse> deleteLike(@PathVariable String slug){
+        return articleService.deleteLike(slug);
+    }
     @PostMapping("/{slug}/comments")
     public ResponseEntity<CommentResponse> addComment(@PathVariable String slug, @RequestBody CommentResponse commentResponse){
         return articleService.addComment(slug,commentResponse);
@@ -57,6 +61,11 @@ public class ArticleController {
     @DeleteMapping("/{slug}/comments/{id}")
     public void deleteComment(@PathVariable String slug, @PathVariable Long id){
         articleService.deleteComment(slug,id);
+    }
+
+    @DeleteMapping("/{slug}")
+    public void deleteArticle(@PathVariable String slug){
+        articleService.deleteArticle(slug);
     }
 
 }

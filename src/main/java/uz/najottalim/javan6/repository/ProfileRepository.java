@@ -4,11 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import uz.najottalim.javan6.entity.Profile;
+import uz.najottalim.javan6.repository.extension.ProfileRepositoryExtension;
 
 import java.util.*;
 
 @Repository
-public interface ProfileRepository extends JpaRepository<Profile,Long> {
+public interface ProfileRepository extends JpaRepository<Profile,Long>, ProfileRepositoryExtension {
     Optional<Profile> findByUserUsername(String username);
     Optional<Profile> findByUserEmail(String email);
     @Query(
