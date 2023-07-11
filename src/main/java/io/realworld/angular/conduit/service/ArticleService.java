@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ArticleService {
-    ResponseEntity<CommonResponse<List<ArticleDTO>>>getAllArticles(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
+    ResponseEntity<CommonResponse<List<ArticleDTO>>> getAllArticles(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
 
     ResponseEntity<ArticleDTO> getArticleBySlag(String slug);
 

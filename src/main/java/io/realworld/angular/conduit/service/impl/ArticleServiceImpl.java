@@ -9,7 +9,6 @@ import io.realworld.angular.conduit.repository.ArticleRepository;
 import io.realworld.angular.conduit.repository.UserRepository;
 import io.realworld.angular.conduit.service.ArticleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -26,24 +25,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ResponseEntity<CommonResponse<List<ArticleDTO>>> getAllArticles(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag) {
-        PageRequest pageRequest = null;
-        if(limit.isPresent() && offset.isPresent()) {
-            pageRequest = PageRequest.of(offset.get() / limit.get(), limit.get());
-            List<ArticleDTO> articleDTOList = articleRepository.findAll(pageRequest).stream().map(a -> articleMapper.toDto(a, articleRepository, userRepository)).toList();
-            if (author.isPresent()) {
-                articleDTOList = articleDTOList.stream().filter(articleDTO -> articleDTO.author().userName().equals(author.get())).toList();
-            }
-            if (tag.isPresent()) {
-                articleDTOList = articleDTOList.stream().filter(articleDTO -> articleDTO.tagList().contains(tag)).toList();
-            }
-            if(favorited.isPresent()){
-                articleDTOList = articleDTOList.stream().filter(ArticleDTO::favorited).toList();
-            }
-            CommonResponse<List<ArticleDTO>> response = new CommonResponse<>();
-            response.add("articles", articleDTOList);
-            return ResponseEntity.ok(response);
-        }
-        throw new NotFoundException("Article Not found");
+        List<ArticleDTO> allArticles = articleRepository.getAllArticles(limit, offset, author, favorited, tag);
+        System.out.println(allArticles);
+        CommonResponse<List<ArticleDTO>> commonResponse = new CommonResponse<List<ArticleDTO>>();
+        commonResponse.add("articles",allArticles);
+        return ResponseEntity.ok(commonResponse);
+
     }
 
     @Override
@@ -79,8 +66,12 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ResponseEntity<ArticleDTO> addFavorite(String slug) {
         Long idBySlug = CommonService.getIdBySlug(slug);
+        Article article = articleRepository.findById(idBySlug).orElseThrow(() -> new NotFoundException("Article not found"));
         Long userId = 0L;
-        return articleRepository.addLike(idBySlug,userId);
+        Integer integer = articleRepository.addLike(idBySlug, userId);
+        System.out.println(integer);
+
+        return ResponseEntity.ok(articleMapper.toDto(article,articleRepository,userRepository));
     }
 
     @Override

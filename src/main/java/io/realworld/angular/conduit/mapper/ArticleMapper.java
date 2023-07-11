@@ -11,7 +11,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 
-@Service
 @Mapper(componentModel = "spring")
 public interface ArticleMapper {
     @Mapping(target = "slug", source = "article", qualifiedByName = "toDtoSlug")

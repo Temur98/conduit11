@@ -5,6 +5,7 @@ import io.realworld.angular.conduit.dto.CommentDTO;
 import io.realworld.angular.conduit.dto.CommonResponse;
 import io.realworld.angular.conduit.exception.NotFoundException;
 import io.realworld.angular.conduit.mapper.ArticleMapper;
+import io.realworld.angular.conduit.mapper.CommentMapper;
 import io.realworld.angular.conduit.model.Comment;
 import io.realworld.angular.conduit.repository.CommentRepository;
 import io.realworld.angular.conduit.service.CommentService;
@@ -18,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-    private final ArticleMapper commentMapper;
+    private final CommentMapper commentMapper;
 
     @Override
     public ResponseEntity<CommonResponse<List<CommentDTO>>> getCommentsBySlug(String slug) {

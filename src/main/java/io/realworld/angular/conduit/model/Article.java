@@ -12,11 +12,11 @@ import java.util.List;
 @Table(name = "articles")
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String slug;
     private String title;
     private String description;
     private String body;

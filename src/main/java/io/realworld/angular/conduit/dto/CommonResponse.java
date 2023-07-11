@@ -3,10 +3,11 @@ package io.realworld.angular.conduit.dto;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class CommonResponse<T> {
-    private Map<String, T> properties;
+    private final Map<String, T> properties = new HashMap<>();
 
     @JsonAnySetter
     public void add(String key, T value) {
