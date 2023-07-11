@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ArticleRepositoryExtension {
-    List<ArticleDto> getArticleListPageable(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
+    List<Article> getArticleListPageable(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
 
 }
