@@ -4,6 +4,7 @@ import io.realworld.angular.conduit.repository.extension.LikesExtension;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.Tuple;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +17,24 @@ public class LikesExtensionImpl implements LikesExtension {
 
 
     @Override
-    public Integer addLike(Long articleId, Long userId) {
-        entityManager.createNativeQuery("INSERT INTO LIKES (ARTICLE_ID, USER_ID) VALUES (?1,?2)")
-                .setParameter(1, articleId).setParameter(2, userId).executeUpdate();
+    @Transactional
+    public void addLike(Long articleId, Long userId) {
+        boolean userDontClickedLike = isCurrentUserDontClickedLike(articleId, userId);
+        if (userDontClickedLike) {
+            entityManager.createNativeQuery("INSERT INTO LIKES VALUES (?,?)")
+                    .setParameter(1, articleId)
+                    .setParameter(2, userId)
+                    .executeUpdate();
+        }
+    }
 
-        return 1;
+    public boolean isCurrentUserDontClickedLike(Long articleId,Long userId) {
+        String query = "select * from likes where article_id = ? and user_id = ?";
+        List resultList = entityManager.createNativeQuery(query)
+                .setParameter(1, articleId)
+                .setParameter(2, userId)
+                .getResultList();
+        return resultList.isEmpty();
     }
 
     @Override

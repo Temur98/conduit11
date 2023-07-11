@@ -94,10 +94,8 @@ public class ArticleServiceImpl implements ArticleService {
     public ResponseEntity<ArticleDTO> addFavorite(String slug) {
         Long idBySlug = CommonService.getIdBySlug(slug);
         Article article = articleRepository.findById(idBySlug).orElseThrow(() -> new NotFoundException("Article not found"));
-        Long userId = 0L;
-        System.out.println(article);
-        Integer integer = articleRepository.addLike(idBySlug, userId);
-
+        Long userId = 2L;
+        articleRepository.addLike(idBySlug, userId);
         return ResponseEntity.ok(articleMapper.toDto(article,articleRepository,userRepository));
     }
 
