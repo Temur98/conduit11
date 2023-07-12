@@ -7,13 +7,16 @@ import io.realworld.angular.conduit.exception.SimpleException;
 import io.realworld.angular.conduit.mapper.ArticleMapper;
 import io.realworld.angular.conduit.model.Article;
 import io.realworld.angular.conduit.model.Tag;
+import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.repository.ArticleRepository;
 import io.realworld.angular.conduit.repository.TagRepository;
 import io.realworld.angular.conduit.repository.UserRepository;
 import io.realworld.angular.conduit.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,6 +36,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ResponseEntity<CommonResponse<List<ArticleDTO>>> getAllArticles(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag) {
         if (limit.isPresent() && offset.isPresent()) {
+
             List<Article> allArticles = articleRepository.getArticlesPageable(limit.get(), offset.get(), author, favorited, tag);
 
             List<ArticleDTO> articles = allArticles.stream().map(article -> articleMapper.toDto(article,articleRepository,userRepository)).toList();
@@ -94,7 +98,7 @@ public class ArticleServiceImpl implements ArticleService {
     public ResponseEntity<ArticleDTO> addFavorite(String slug) {
         Long idBySlug = CommonService.getIdBySlug(slug);
         Article article = articleRepository.findById(idBySlug).orElseThrow(() -> new NotFoundException("Article not found"));
-        Long userId = 2L;
+        Long userId = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         articleRepository.addLike(idBySlug, userId);
         return ResponseEntity.ok(articleMapper.toDto(article,articleRepository,userRepository));
     }

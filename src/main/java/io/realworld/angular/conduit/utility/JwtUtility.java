@@ -16,46 +16,41 @@ import java.util.Date;
 
 @Component
 public class JwtUtility {
-    private static final int expireInMs = 6000*1000;
+    private static final int expireInMs = 6000 * 1000;
     private static final String secretKey = "myAngularMediumConduitForSimpleBankServices";
     private static final Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
-    public String generate(String username, String authorities){
+    public String generate(String username, String authorities) {
         return Jwts.builder()
                 .setSubject("FOR-LOGIN")
                 .setIssuer("Medium")
                 .claim("username", username)
                 .claim("authorities", authorities)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+expireInMs))
+                .setExpiration(new Date(System.currentTimeMillis() + expireInMs))
                 .signWith(key)
                 .compact();
     }
 
 
     public boolean validate(String token) {
-        if (getUsername(token) != null && !isExpired(token) && getAuthorities(token).size()!=0) {
-            return true;
-        }
-        return false;
+        return getUsername(token) != null && !isExpired(token) && getAuthorities(token).size() != 0;
     }
 
     public String getUsername(String token) {
-        Claims claims = getClaims(token);
-        return claims.get("username").toString();
+        return getClaims(token).get("username").toString();
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities(String token) {
-        Claims claims = getClaims(token);
-        return Arrays.stream(claims.get("authorities", String.class)
-                        .split(", ")).
-                map(SimpleGrantedAuthority::new)
+        return Arrays.stream(getClaims(token)
+                .get("authorities", String.class)
+                .split(", "))
+                .map(SimpleGrantedAuthority::new)
                 .toList();
     }
 
     public boolean isExpired(String token) {
-        Claims claims = getClaims(token);
-        return claims.getExpiration().before(new Date(System.currentTimeMillis()));
+        return getClaims(token).getExpiration().before(new Date(System.currentTimeMillis()));
     }
 
     private Claims getClaims(String token) {

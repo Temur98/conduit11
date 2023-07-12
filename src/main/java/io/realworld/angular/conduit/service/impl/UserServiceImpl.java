@@ -8,10 +8,18 @@ import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.repository.UserRepository;
 import io.realworld.angular.conduit.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +27,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public ResponseEntity<UserDTO> registerUser(UserDTO userDTO) {
@@ -45,6 +54,9 @@ public class UserServiceImpl implements UserService {
         User user1 = userMapper.toEntity(user);
         User user2 = userRepository.findByUsername(user1.getUsername())
                 .orElseThrow(() -> new NotFoundException("user not found"));
+        SecurityContext context = SecurityContextHolder.getContext();
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user2, null, List.of(new SimpleGrantedAuthority("user")));
+        context.setAuthentication(usernamePasswordAuthenticationToken);
         return ResponseEntity.ok(userMapper.toDto(user2));
     }
 
@@ -52,5 +64,14 @@ public class UserServiceImpl implements UserService {
 
     public ResponseEntity<UserDTO> getCurrentUser() {
      return null;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+
+        User account = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new UsernameNotFoundException("cannot load user: "));
+
+        return new org.springframework.security.core.userdetails.User(userName, account.getPassword(), List.of(new SimpleGrantedAuthority("user")));
     }
 }

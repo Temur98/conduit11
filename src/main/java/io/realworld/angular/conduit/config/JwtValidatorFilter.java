@@ -27,7 +27,7 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String value = request.getHeader("Authorization");
-        if (value == null) {
+        if (value != null) {
             value = value.substring(value.indexOf(" ") + 1);
             try {
                 if (jwtUtility.validate(value)) {
@@ -41,9 +41,8 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
                 }
             } catch (Exception ex) {
                 log.info("token validation exception {}", ex.getMessage());
-            } finally {
-                filterChain.doFilter(request, response);
             }
         }
+        filterChain.doFilter(request, response);
     }
 }

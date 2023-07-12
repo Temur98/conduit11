@@ -26,12 +26,12 @@ public class ArticleExtensionImpl implements ArticleExtension {
         author.ifPresent(value->predicates.add(criteriaBuilder.equal(root.get("author").get("username"),value)));
 
         favorited.ifPresent(value -> {
-            ListJoin<Article, User> profileJoin = root.joinList("likes");
+            ListJoin<Article, User> profileJoin = root.joinList("users");
             predicates.add(criteriaBuilder.equal(profileJoin.get("username"),value));
         });
 
         tag.ifPresent(value->{
-            ListJoin<Article, Tag> tagJoin = root.joinList("tags");
+            ListJoin<Article, Tag> tagJoin = root.joinList("tagList");
             predicates.add(criteriaBuilder.equal(tagJoin.get("name"),value));
         });
 

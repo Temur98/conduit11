@@ -3,6 +3,7 @@ package io.realworld.angular.conduit.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,7 +40,30 @@ public class SecurityConfig {
                 })
         );
         httpSecurity.authorizeHttpRequests(
-                request ->request.anyRequest().permitAll()
+                request ->request
+                        .requestMatchers(HttpMethod.POST, "/users/login")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users")
+                        .permitAll()
+                        .requestMatchers("/users")
+                        .authenticated()
+//                        .requestMatchers(HttpMethod.DELETE,
+//                                "/accounts/**",
+//                                "/balances/**",
+//                                "/loans/**",
+//                                "/cards/**"
+//                        )
+//                        .hasRole("ADMIN")
+//                        .requestMatchers(
+//                                "/balances/**",
+//                                "/loans/**",
+//                                "/cards/**")
+//                        .hasRole("USER")
+//                        .requestMatchers(
+//                                "/notices",
+//                                "/contacts")
+                        .anyRequest()
+                        .permitAll()
         );
         httpSecurity.addFilterBefore(jwtValidatorFilter, UsernamePasswordAuthenticationFilter.class);
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
@@ -48,6 +72,8 @@ public class SecurityConfig {
         return httpSecurity.build();
 
     }
+
+    @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
