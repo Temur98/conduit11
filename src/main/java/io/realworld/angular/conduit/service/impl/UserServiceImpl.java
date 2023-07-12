@@ -42,6 +42,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public ResponseEntity<UserDTO> registerUser(UserDTO userDTO) {
+        System.out.println(userDTO);
         userRepository.findByUsername(userDTO.userName()).ifPresent(user -> {
             throw new SimpleException("Username already exists");
         });
@@ -50,6 +51,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         });
 
         User entity = userMapper.toEntity(userDTO);
+        System.out.println(entity.getPassword());
         String encode = passwordEncoder.encode(entity.getPassword());
         entity.setPassword(encode);
 
