@@ -28,7 +28,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ResponseEntity<CommonResponse<List<ArticleDTO>>> getAllArticles(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag) {
-        List<ArticleDTO> allArticles = articleRepository.getAllArticles(limit, offset, author, favorited, tag);
+        List<Article> allArticles = articleRepository.getAllArticles(limit, offset, author, favorited, tag);
         CommonResponse commonResponse = new CommonResponse<>();
         commonResponse.add("articles", allArticles);
         return ResponseEntity.ok(commonResponse);

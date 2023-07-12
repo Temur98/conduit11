@@ -19,7 +19,7 @@ public class Comment {
     private String body;
     private LocalDate createAt;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+//    @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne
     @JoinColumn(name = "article_id")

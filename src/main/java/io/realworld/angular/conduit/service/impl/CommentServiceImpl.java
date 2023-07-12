@@ -3,6 +3,8 @@ package io.realworld.angular.conduit.service.impl;
 
 import io.realworld.angular.conduit.dto.CommentDTO;
 import io.realworld.angular.conduit.dto.CommonResponse;
+import io.realworld.angular.conduit.mapper.CommentMapper;
+import io.realworld.angular.conduit.repository.CommentRepository;
 import io.realworld.angular.conduit.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +15,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
+    private final CommentMapper commentMapper;
+    private final CommentRepository commentRepository;
 
     @Override
     public ResponseEntity<CommonResponse<List<CommentDTO>>> getCommentsBySlug(String slug) {
         //comments
-
+        Long id = CommonService.getIdBySlug(slug);
         return null;
     }
 
