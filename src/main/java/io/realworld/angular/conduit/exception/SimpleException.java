@@ -1,6 +1,7 @@
 package io.realworld.angular.conduit.exception;
 
-public class SimpleException extends Throwable {
-    public SimpleException(String s) {
+public class SimpleException extends RuntimeException {
+    public SimpleException(String message) {
+        super(message);
     }
 }

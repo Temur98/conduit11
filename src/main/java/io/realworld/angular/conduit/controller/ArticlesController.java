@@ -2,7 +2,7 @@ package io.realworld.angular.conduit.controller;
 
 import io.realworld.angular.conduit.dto.ArticleDTO;
 import io.realworld.angular.conduit.dto.CommonResponse;
-import io.realworld.angular.conduit.groups.OnCreated;
+import io.realworld.angular.conduit.groups.OnCreate;
 import io.realworld.angular.conduit.service.ArticleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +57,7 @@ public class ArticlesController {
 
 
     @PostMapping
-    @Validated(OnCreated.class)
+    @Validated(OnCreate.class)
     public ResponseEntity<Map<String,ArticleDTO>> addArticle(@Valid @RequestBody Map<String,ArticleDTO> articleMap, Principal principal){
         return articleService.addArticle(articleMap,principal);
     }

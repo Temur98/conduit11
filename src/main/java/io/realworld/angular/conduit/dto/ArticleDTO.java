@@ -1,10 +1,6 @@
 package io.realworld.angular.conduit.dto;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import io.realworld.angular.conduit.groups.OnCreated;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
-import org.springframework.context.annotation.Profile;
 
 import java.time.LocalDate;
 import java.util.List;
