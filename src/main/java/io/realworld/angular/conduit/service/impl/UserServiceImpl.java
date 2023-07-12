@@ -43,11 +43,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public ResponseEntity<UserResponse> registerUser(UserResponse userResponse) {
-        UserDTO userDTO = userResponse.getUserDTO();
-        userRepository.findByUsername(userDTO.userName()).ifPresent(user -> {
+        UserDTO userDTO = userResponse.getUser();
+        userRepository.findByUsername(userDTO.username()).ifPresent(user -> {
             throw new SimpleException("Username already exists");
         });
-        userRepository.findByEmail(userDTO.userName()).ifPresent(user -> {
+        userRepository.findByEmail(userDTO.username()).ifPresent(user -> {
             throw new SimpleException("Email already exists");
         });
 
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         Authentication auth = new UsernamePasswordAuthenticationToken(save,null,Collections.singleton(new SimpleGrantedAuthority("user")));
         SecurityContextHolder.getContext().setAuthentication(auth);
-        userResponse.setUserDTO(userMapper.toDto(save));
+        userResponse.setUser(userMapper.toDto(save));
         return ResponseEntity.ok(userResponse);
     }
 
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public ResponseEntity<UserDTO> loginUser(UserDTO userDTO) {
-        User user = userRepository.findByUsername(userDTO.userName()).orElseThrow(() -> new NotFoundException("Username not found"));
+        User user = userRepository.findByUsername(userDTO.username()).orElseThrow(() -> new NotFoundException("Username not found"));
         String encode = passwordEncoder.encode(userDTO.password());
         System.out.println(encode);
         if (encode.equals(user.getPassword())) {

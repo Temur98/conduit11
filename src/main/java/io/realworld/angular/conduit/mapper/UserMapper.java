@@ -1,6 +1,5 @@
 package io.realworld.angular.conduit.mapper;
 
-import io.realworld.angular.conduit.config.JWTSecurityGeneratorFilter;
 import io.realworld.angular.conduit.dto.UserDTO;
 import io.realworld.angular.conduit.exception.NotRegisteredException;
 import io.realworld.angular.conduit.model.User;
@@ -22,7 +21,7 @@ public class UserMapper {
         if(userDTO == null) return null;
         return new User(
                 userDTO.id(),
-                userDTO.userName(),
+                userDTO.username(),
                 userDTO.bio(),
                 userDTO.password(),
                 userDTO.email(),

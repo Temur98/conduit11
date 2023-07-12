@@ -14,7 +14,7 @@ public record UserDTO(
         @Null(groups = OnUpdate.class)
         Long id,
         @NotNull
-        String userName,
+        String username,
         @Email
         String email,
         @Length(min = 4, max = 16)
