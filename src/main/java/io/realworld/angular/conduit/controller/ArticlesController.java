@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @RequestMapping("/articles")
 @Slf4j
 @RequiredArgsConstructor
+
 public class ArticlesController {
     private final ArticleService articleService;
 
@@ -44,20 +46,20 @@ public class ArticlesController {
     }
 
     @PostMapping("/{slug}/favorite")
-    public ResponseEntity<ArticleDTO> addFavorite(@PathVariable String slug){
-        return articleService.addFavorite(slug);
+    public ResponseEntity<ArticleDTO> addFavorite(@PathVariable String slug, Principal principal){
+        return articleService.addFavorite(slug,principal);
     }
 
     @DeleteMapping("/{slug}/favorite")
-    public void deleteFavorite(@PathVariable String slug){
-        articleService.deleteFavorite(slug);
+    public void deleteFavorite(@PathVariable String slug,Principal principal){
+        articleService.deleteFavorite(slug,principal);
     }
 
 
     @PostMapping
     @Validated(OnCreated.class)
-    public ResponseEntity<Map<String,ArticleDTO>> addArticle(@Valid @RequestBody Map<String,ArticleDTO> articleMap){
-        return articleService.addArticle(articleMap);
+    public ResponseEntity<Map<String,ArticleDTO>> addArticle(@Valid @RequestBody Map<String,ArticleDTO> articleMap, Principal principal){
+        return articleService.addArticle(articleMap,principal);
     }
 
     @PutMapping

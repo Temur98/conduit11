@@ -3,10 +3,12 @@ package io.realworld.angular.conduit.service.impl;
 import io.realworld.angular.conduit.dto.ArticleDTO;
 import io.realworld.angular.conduit.dto.CommonResponse;
 import io.realworld.angular.conduit.exception.NotFoundException;
+import io.realworld.angular.conduit.exception.NotRegisteredException;
 import io.realworld.angular.conduit.exception.SimpleException;
 import io.realworld.angular.conduit.mapper.ArticleMapper;
 import io.realworld.angular.conduit.model.Article;
 import io.realworld.angular.conduit.model.Tag;
+import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.repository.ArticleRepository;
 import io.realworld.angular.conduit.repository.TagRepository;
 import io.realworld.angular.conduit.repository.UserRepository;
@@ -14,8 +16,14 @@ import io.realworld.angular.conduit.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +62,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ResponseEntity<Map<String,ArticleDTO>> addArticle(Map<String,ArticleDTO> articleMap) {
+    public ResponseEntity<Map<String,ArticleDTO>> addArticle(Map<String,ArticleDTO> articleMap, Principal principal) {
         List<Tag> tagList = new ArrayList<>();
         ArticleDTO articleDTO = articleMap.get("article");
         articleDTO.tagList().forEach(tagDTO -> {
@@ -69,9 +77,11 @@ public class ArticleServiceImpl implements ArticleService {
 
         Article entity = articleMapper.toEntity(articleDTO);
         entity.setTagList(tagList);
+
+        entity.setAuthor(userRepository.findByUsername(principal.getName()).orElseThrow(() -> new NotFoundException("User not found")));
         Article save = articleRepository.save(entity);
 
-        return ResponseEntity.ok(Map.of("article",articleMapper.toDto(save, articleRepository, userRepository)));
+        return ResponseEntity.ok(Map.of("article", articleMapper.toDto(save, articleRepository, userRepository)));
     }
 
     @Override
@@ -91,18 +101,22 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ResponseEntity<ArticleDTO> addFavorite(String slug) {
+    public ResponseEntity<ArticleDTO> addFavorite(String slug, Principal principal) {
         Long idBySlug = CommonService.getIdBySlug(slug);
         Article article = articleRepository.findById(idBySlug).orElseThrow(() -> new NotFoundException("Article not found"));
-        Long userId = 2L;
-        articleRepository.addLike(idBySlug, userId);
-        return ResponseEntity.ok(articleMapper.toDto(article,articleRepository,userRepository));
+        if (principal.getName() != null) {
+            User user = userRepository.findByUsername(principal.getName()).orElseThrow(() -> new NotFoundException("User not found"));
+            articleRepository.addLike(idBySlug, user.getId());
+            return ResponseEntity.ok(articleMapper.toDto(article, articleRepository, userRepository));
+        } else {
+            throw new NotFoundException("User not found");
+        }
     }
 
     @Override
-    public void deleteFavorite(String slug) {
+    public void deleteFavorite(String slug,Principal principal) {
         Long idBySlug = CommonService.getIdBySlug(slug);
-        Long userId = 0L;
+        Long userId = userRepository.findByUsername(principal.getName()).orElseThrow(() -> new NotFoundException("User not found")).getId();
         articleRepository.removeLike(idBySlug,userId);
     }
 

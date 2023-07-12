@@ -2,8 +2,6 @@ package io.realworld.angular.conduit.repository.extension.impl;
 
 import io.realworld.angular.conduit.repository.extension.LikesExtension;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -38,20 +36,20 @@ public class LikesExtensionImpl implements LikesExtension {
     }
 
     @Override
-    public void removeLike(Long idBySlug, Long userId) {
-        
+    public Integer likesCount(Long articleId) {
+        String query = "select * from likes where article_id = ?";
+        List resultList = entityManager.createNativeQuery(query)
+                .setParameter(1, articleId)
+                .getResultList();
+        return resultList.size();
     }
 
     @Override
-    public Long likes(Long idBySlug, Long userId) {
-//        Query query = entityManager.createNativeQuery("select * from ARTICLES a join LIKES l on a.ID = l.ARTICLE_ID where a.id = ?", Tuple.class);
-//        List<Tuple> likes = (List<Tuple>) query.getResultList();
-//
-//        likes.stream()
-//                .map()
-//
-//        return null;
-        return null;
+    public void removeLike(Long articleId, Long userId) {
+        entityManager.createNativeQuery("DELETE FROM LIKES WHERE ARTICLE_ID = ? AND USER_ID = ?")
+                .setParameter(1, articleId)
+                .setParameter(2, userId)
+                .executeUpdate();
     }
 
 
