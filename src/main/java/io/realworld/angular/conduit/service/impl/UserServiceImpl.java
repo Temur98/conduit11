@@ -12,6 +12,7 @@ import io.realworld.angular.conduit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,11 +42,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public ResponseEntity<UserDTO> registerUser(UserDTO userDTO) {
-        if (userRepository.findByUsername(userDTO.userName()).isPresent()){
+        userRepository.findByUsername(userDTO.userName()).ifPresent(user -> {
             throw new SimpleException("Username already exists");
-        }
+        });
+        userRepository.findByEmail(userDTO.userName()).ifPresent(user -> {
+            throw new SimpleException("Email already exists");
+        });
+
         User entity = userMapper.toEntity(userDTO);
+        String encode = passwordEncoder.encode(entity.getPassword());
+        entity.setPassword(encode);
+
         User save = userRepository.save(entity);
+
+        Authentication auth = new UsernamePasswordAuthenticationToken(save,null,Collections.singleton(new SimpleGrantedAuthority("user")));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         return ResponseEntity.ok(userMapper.toDto(save));
     }
 

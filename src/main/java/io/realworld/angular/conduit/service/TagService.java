@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface TagService {
 
-    ResponseEntity<CommonResponse<List<TagDTO>>> getAll();
+    ResponseEntity<CommonResponse<List<String>>> getAll();
 }

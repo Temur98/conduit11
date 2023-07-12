@@ -31,7 +31,7 @@ public class ArticleExtensionImpl implements ArticleExtension {
         });
 
         tag.ifPresent(value->{
-            ListJoin<Article, Tag> tagJoin = root.joinList("tags");
+            ListJoin<Article, Tag> tagJoin = root.joinList("tagList");
             predicates.add(criteriaBuilder.equal(tagJoin.get("name"),value));
         });
 

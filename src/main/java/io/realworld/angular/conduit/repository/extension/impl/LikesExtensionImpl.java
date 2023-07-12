@@ -17,8 +17,8 @@ public class LikesExtensionImpl implements LikesExtension {
     @Override
     @Transactional
     public void addLike(Long articleId, Long userId) {
-        boolean userDontClickedLike = isCurrentUserDontClickedLike(articleId, userId);
-        if (userDontClickedLike) {
+        boolean isLiked = isLiked(articleId, userId);
+        if (isLiked) {
             entityManager.createNativeQuery("INSERT INTO LIKES VALUES (?,?)")
                     .setParameter(1, articleId)
                     .setParameter(2, userId)
@@ -26,7 +26,8 @@ public class LikesExtensionImpl implements LikesExtension {
         }
     }
 
-    public boolean isCurrentUserDontClickedLike(Long articleId,Long userId) {
+    @Override
+    public boolean isLiked(Long articleId,Long userId) {
         String query = "select * from likes where article_id = ? and user_id = ?";
         List resultList = entityManager.createNativeQuery(query)
                 .setParameter(1, articleId)

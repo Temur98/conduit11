@@ -18,9 +18,9 @@ public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
 
     @Override
-    public ResponseEntity<CommonResponse<List<TagDTO>>> getAll() {
-        List<TagDTO> list = tagRepository.findAll().stream().map(TagMapper::toDto).toList();
-        CommonResponse<List<TagDTO>> commonResponse = new CommonResponse<>();
+    public ResponseEntity<CommonResponse<List<String>>> getAll() {
+        List<String> list = tagRepository.findAll().stream().map(Tag::getName).toList();
+        CommonResponse<List<String>> commonResponse = new CommonResponse<>();
         commonResponse.add("tags",list);
 
         return ResponseEntity.ok(commonResponse);
