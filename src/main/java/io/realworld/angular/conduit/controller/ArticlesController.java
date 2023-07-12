@@ -4,7 +4,6 @@ import io.realworld.angular.conduit.dto.ArticleDTO;
 import io.realworld.angular.conduit.dto.CommonResponse;
 import io.realworld.angular.conduit.groups.OnCreated;
 import io.realworld.angular.conduit.service.ArticleService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +55,7 @@ public class ArticlesController {
 
     @PostMapping
     @Validated(OnCreated.class)
-    public ResponseEntity<Map<String,ArticleDTO>> addArticle(@Valid @RequestBody Map<String,ArticleDTO> articleMap){
+    public ResponseEntity<Map<String,ArticleDTO>> addArticle( @RequestBody Map<String,ArticleDTO> articleMap){
         return articleService.addArticle(articleMap);
     }
 
