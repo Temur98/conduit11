@@ -10,6 +10,7 @@ public record UserDTO(
         String password,
         String bio,
         String image,
+        String token,
         Boolean following
 
 ){
