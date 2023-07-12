@@ -2,6 +2,7 @@ package io.realworld.angular.conduit.service.impl;
 
 
 import io.realworld.angular.conduit.dto.UserDTO;
+import io.realworld.angular.conduit.dto.response.UserResponse;
 import io.realworld.angular.conduit.exception.NotFoundException;
 import io.realworld.angular.conduit.exception.NotRegisteredException;
 import io.realworld.angular.conduit.exception.SimpleException;
@@ -41,8 +42,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
-    public ResponseEntity<UserDTO> registerUser(UserDTO userDTO) {
-        System.out.println(userDTO);
+    public ResponseEntity<UserResponse> registerUser(UserResponse userResponse) {
+        UserDTO userDTO = userResponse.getUserDTO();
         userRepository.findByUsername(userDTO.userName()).ifPresent(user -> {
             throw new SimpleException("Username already exists");
         });
@@ -59,8 +60,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         Authentication auth = new UsernamePasswordAuthenticationToken(save,null,Collections.singleton(new SimpleGrantedAuthority("user")));
         SecurityContextHolder.getContext().setAuthentication(auth);
-
-        return ResponseEntity.ok(userMapper.toDto(save));
+        userResponse.setUserDTO(userMapper.toDto(save));
+        return ResponseEntity.ok(userResponse);
     }
 
     @Override

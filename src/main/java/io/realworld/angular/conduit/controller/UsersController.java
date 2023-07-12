@@ -1,6 +1,7 @@
 package io.realworld.angular.conduit.controller;
 
 import io.realworld.angular.conduit.dto.UserDTO;
+import io.realworld.angular.conduit.dto.response.UserResponse;
 import io.realworld.angular.conduit.groups.OnCreate;
 import io.realworld.angular.conduit.groups.OnUpdate;
 import io.realworld.angular.conduit.service.UserService;
@@ -25,8 +26,8 @@ public class UsersController {
 
     @PostMapping("/users")
     @Validated(OnCreate.class)
-    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO user){
-        return userService.registerUser(user);
+    public ResponseEntity<UserResponse> registerUser(@RequestBody UserResponse userResponse){
+        return userService.registerUser(userResponse);
     }
 
     @GetMapping("/user")
