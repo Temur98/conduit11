@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -23,8 +24,8 @@ public class CommentController {
         return commentService.getCommentsBySlug(slug);
     }
     @PostMapping("/{slug}/comments")
-    public ResponseEntity<CommentDTO> addCommentBySlug(@PathVariable String slug, @RequestBody CommentDTO comment){
-        return commentService.addCommentBySlug(slug, comment);
+    public ResponseEntity<CommentDTO> addCommentBySlug(@PathVariable String slug, @RequestBody CommentDTO comment, Principal principal){
+        return commentService.addCommentBySlug(slug, comment, principal);
     }
 
     @DeleteMapping("/{slug}/comments/{commentId}")

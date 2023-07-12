@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 
 @JsonRootName("profile")
 public record ProfileDTO (
-        String userName,
+        String username,
         String bio,
         String image,
-        Boolean following
-){
+        Boolean followin){
 }
