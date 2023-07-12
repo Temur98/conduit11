@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Long> {
-    Optional<User> findByUsername(String aDefault);
+    Optional<User> findByUsername(String username);
 
     @Query(value = "select case when count(*) > 0 then true else false end" +
             "from Article a join follows f" +

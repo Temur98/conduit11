@@ -16,7 +16,6 @@ public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
     private String description;
     private String body;
@@ -29,15 +28,15 @@ public class Article {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<Tag> tagList;
+
     @ManyToMany
     @JoinTable(
             name = "likes",
-            joinColumns = @JoinColumn(name = "article_id",referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id")
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<User> likes;
+    private List<User> users;
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;
-
 }

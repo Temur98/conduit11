@@ -5,14 +5,15 @@ import io.realworld.angular.conduit.dto.CommonResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ArticleService {
-    ResponseEntity<CommonResponse<List<ArticleDTO>>>getAllArticles(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
+    ResponseEntity<CommonResponse<List<ArticleDTO>>> getAllArticles(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
 
     ResponseEntity<ArticleDTO> getArticleBySlag(String slug);
 
-    ResponseEntity<ArticleDTO> addArticle(ArticleDTO articleDTO);
+    ResponseEntity<Map<String,ArticleDTO>> addArticle(Map<String,ArticleDTO> articleDTO);
 
     ResponseEntity<ArticleDTO> updateArticle(ArticleDTO articleDTO);
 
