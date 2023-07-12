@@ -8,7 +8,11 @@ import java.util.Optional;
 
 public class ArticleExtensionImpl implements ArticleExtension {
     @Override
-    public List<ArticleDTO> getAllArticles(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag) {
+    public List<ArticleDTO> getAllArticles(Optional<Integer> limit,
+                                           Optional<Integer> offset,
+                                           Optional<String> author,
+                                           Optional<String> favorited,
+                                           Optional<String> tag) {
         return null;
     }
 }
