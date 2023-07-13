@@ -15,42 +15,22 @@ import java.util.Date;
 
 @Service
 public class JWTUtility {
-    private static final Integer EXPIRE_IN_MS = 3600 * 1000;
-    private static final String SECRET_KEY = "jxgEQeXHuPq8VdbyYFNkANdudQ53YUn4";
-    private static final SecretKey KEY = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    private static final Integer expireInMs = 3600 * 1000;
 
+    private static final String SECRET_KEY = "jxgEQeXHuPq8VdbyYFNkANdudQ53YUn4";
+    private final static SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     public String generate(String username, String authorities) {
-        return Jwts.builder()
+        String jwtToken = Jwts.builder()
                 .setSubject("FOR-LOGIN")
-                .setIssuer("Medium")
-                .claim("usernmae",username)
-                .claim("jwt-authorization", authorities)
+                .setIssuer("MEDIUM")
+                .claim("username", username)
+                .claim("authorities", authorities)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_IN_MS))
-                .signWith(KEY)
+                .setExpiration(new Date(System.currentTimeMillis() + expireInMs))
+                .signWith(key)
                 .compact();
-    }
-
-    private Claims getClaims(String token){
-        return Jwts.parserBuilder()
-                .setSigningKey(KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    public Boolean isExpired(String token){
-        Claims claims = getClaims(token);
-        return claims.getExpiration().before(new Date(System.currentTimeMillis()));
-    }
-
-    public Collection<? extends GrantedAuthority> getAuthorities(String token){
-        Claims claims = getClaims(token);
-        return Arrays.stream(claims.get("jwt-authorization", String.class)
-                .split(", "))
-                .map(SimpleGrantedAuthority::new)
-                .toList();
+        return jwtToken;
     }
 
     public boolean validate(String token) {
@@ -65,4 +45,24 @@ public class JWTUtility {
         return claims.get("username", String.class);
     }
 
+    public Collection<? extends GrantedAuthority> getAuthorities(String token) {
+        Claims claims = getClaims(token);
+        return Arrays.stream(claims.get("authorities", String.class)
+                        .split(", ")).
+                map(SimpleGrantedAuthority::new)
+                .toList();
+    }
+
+    public boolean isExpired(String token) {
+        Claims claims = getClaims(token);
+        return claims.getExpiration().before(new Date(System.currentTimeMillis()));
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 }

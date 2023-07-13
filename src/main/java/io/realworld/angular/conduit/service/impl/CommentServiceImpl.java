@@ -2,7 +2,7 @@ package io.realworld.angular.conduit.service.impl;
 
 
 import io.realworld.angular.conduit.dto.CommentDTO;
-import io.realworld.angular.conduit.dto.CommonResponse;
+import io.realworld.angular.conduit.dto.response.CommonResponse;
 import io.realworld.angular.conduit.exception.NotFoundException;
 import io.realworld.angular.conduit.mapper.CommentMapper;
 import io.realworld.angular.conduit.model.Comment;
@@ -27,9 +27,9 @@ public class CommentServiceImpl implements CommentService {
     public ResponseEntity<CommonResponse<List<CommentDTO>>> getCommentsBySlug(String slug) {
         Long id = CommonService.getIdBySlug(slug);
         List<Comment> comments = commentRepository.findByArticle_Id(id).orElseThrow(() -> new NotFoundException("Comment not found"));
-        CommonResponse<java.util.stream.Stream<Object>> commonResponse = new CommonResponse<>();
-        commonResponse.add("comments",comments.stream().map(commentMapper::toDto));
-        return null;
+        CommonResponse<List<CommentDTO>> commonResponse = new CommonResponse<>();
+        commonResponse.add("comments", comments.stream().map(commentMapper::toDto).toList());
+        return ResponseEntity.ok(commonResponse);
     }
 
     @Override

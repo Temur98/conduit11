@@ -13,7 +13,7 @@ public interface UserService{
 
     ResponseEntity<UserDTO> updateUser(UserDTO userDTO);
 
-    ResponseEntity<UserDTO> loginUser(UserDTO user);
+    ResponseEntity<UserResponse> loginUser(UserResponse userResponse);
 
     ResponseEntity<UserDTO> getCurrentUser();
 }

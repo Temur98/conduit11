@@ -1,8 +1,6 @@
 package io.realworld.angular.conduit.service.impl;
 
-import io.realworld.angular.conduit.dto.CommonResponse;
-import io.realworld.angular.conduit.dto.TagDTO;
-import io.realworld.angular.conduit.mapper.TagMapper;
+import io.realworld.angular.conduit.dto.response.CommonResponse;
 import io.realworld.angular.conduit.model.Tag;
 import io.realworld.angular.conduit.repository.TagRepository;
 import io.realworld.angular.conduit.service.TagService;

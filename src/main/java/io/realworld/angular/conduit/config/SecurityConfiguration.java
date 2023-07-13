@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfiguration {
-
+    private  final JWTSecurityCheckFilter jwtSecurityCheckFilter;
 
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -42,7 +43,7 @@ public class SecurityConfiguration {
                                 .anyRequest()
                                 .permitAll()
         );
-
+        http.addFilterBefore(jwtSecurityCheckFilter, BasicAuthenticationFilter.class);
         http.httpBasic(Customizer.withDefaults());
         return http.build();
     }

@@ -6,6 +6,7 @@ import io.realworld.angular.conduit.dto.response.UserResponse;
 import io.realworld.angular.conduit.exception.NotFoundException;
 import io.realworld.angular.conduit.exception.NotRegisteredException;
 import io.realworld.angular.conduit.exception.SimpleException;
+import io.realworld.angular.conduit.exception.UsernameOrPasswordInvalid;
 import io.realworld.angular.conduit.mapper.UserMapper;
 import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.repository.UserRepository;
@@ -52,13 +53,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         });
 
         User entity = userMapper.toEntity(userDTO);
+
         System.out.println(entity.getPassword());
-        String encode = passwordEncoder.encode(entity.getPassword());
-        entity.setPassword(encode);
+        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
 
         User save = userRepository.save(entity);
 
-        Authentication auth = new UsernamePasswordAuthenticationToken(save,null,Collections.singleton(new SimpleGrantedAuthority("user")));
+        System.out.println(save.getPassword());
+
+        Authentication auth = new UsernamePasswordAuthenticationToken(save.getEmail(),null,Collections.singleton(new SimpleGrantedAuthority("user")));
         SecurityContextHolder.getContext().setAuthentication(auth);
         userResponse.setUser(userMapper.toDto(save));
         return ResponseEntity.ok(userResponse);
@@ -70,19 +73,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public ResponseEntity<UserDTO> loginUser(UserDTO userDTO) {
-        User user = userRepository.findByUsername(userDTO.username()).orElseThrow(() -> new NotFoundException("Username not found"));
-        String encode = passwordEncoder.encode(userDTO.password());
-        System.out.println(encode);
-        if (encode.equals(user.getPassword())) {
+    public ResponseEntity<UserResponse> loginUser(UserResponse userResponse) {
+        UserDTO userDTO = userResponse.getUser();
+
+        User user = userRepository.findByEmail(userDTO.email()).orElseThrow(() -> new UsernameOrPasswordInvalid("Username or password invalid"));
+
+        if (passwordEncoder.matches(userDTO.password(), user.getPassword())) {
+
             SecurityContext context = SecurityContextHolder.getContext();
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user, null, List.of(new SimpleGrantedAuthority("user")));
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user.getEmail(), null, List.of(new SimpleGrantedAuthority("user")));
             context.setAuthentication(usernamePasswordAuthenticationToken);
-            return ResponseEntity.ok(userMapper.toDto(user));
+            SecurityContextHolder.setContext(context);
+
+            userResponse.setUser(userMapper.toDto(user));
+            return ResponseEntity.ok(userResponse);
+        } else {
+            throw new UsernameOrPasswordInvalid("Username or password invalid");
         }
-
-
-        throw new NotRegisteredException("User not authentication");
     }
 
     @Override

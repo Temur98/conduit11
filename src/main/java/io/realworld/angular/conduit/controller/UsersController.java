@@ -20,8 +20,8 @@ public class UsersController {
     private final UserService userService;
 
     @PostMapping("/users/login")
-    public ResponseEntity<UserDTO> loginUser(@RequestBody UserDTO user){
-        return userService.loginUser(user);
+    public ResponseEntity<UserResponse> loginUser(@RequestBody UserResponse userResponse){
+        return userService.loginUser(userResponse);
     }
 
     @PostMapping("/users")

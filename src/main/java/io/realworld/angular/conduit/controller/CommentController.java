@@ -1,7 +1,7 @@
 package io.realworld.angular.conduit.controller;
 
 import io.realworld.angular.conduit.dto.CommentDTO;
-import io.realworld.angular.conduit.dto.CommonResponse;
+import io.realworld.angular.conduit.dto.response.CommonResponse;
 import io.realworld.angular.conduit.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
