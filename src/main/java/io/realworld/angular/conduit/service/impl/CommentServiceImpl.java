@@ -1,9 +1,10 @@
 package io.realworld.angular.conduit.service.impl;
 
 
+import io.realworld.angular.conduit.dto.ArticleDTO;
 import io.realworld.angular.conduit.dto.CommentDTO;
 import io.realworld.angular.conduit.dto.CommonResponse;
-import io.realworld.angular.conduit.exception.NotFoundException;
+import io.realworld.angular.conduit.exceptionshandler.exception.NotFoundException;
 import io.realworld.angular.conduit.mapper.CommentMapper;
 import io.realworld.angular.conduit.model.Comment;
 import io.realworld.angular.conduit.repository.CommentRepository;
@@ -33,11 +34,15 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ResponseEntity<CommentDTO> addCommentBySlug(String slug, CommentDTO commentDTO, Principal principal) {
+    public ResponseEntity<CommonResponse<CommentDTO>> addCommentBySlug(String slug, CommentDTO commentDTO, Principal principal) {
         Comment entity = commentMapper.toEntity(commentDTO);
         entity.setUser(userRepository.findByUsername(principal.getName()).orElseThrow(() -> new NotFoundException("User not found")));
         Comment save = commentRepository.save(entity);
-        return ResponseEntity.ok(commentMapper.toDto(save));
+        CommentDTO commentDTO1 = commentMapper.toDto(save);
+
+        CommonResponse<CommentDTO> commonResponse = new CommonResponse<>();
+        commonResponse.add("commentDTO1", commentDTO1 );
+        return ResponseEntity.ok(commonResponse);
     }
 
     @Override

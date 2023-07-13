@@ -1,7 +1,8 @@
 package io.realworld.angular.conduit.service.impl;
 
+import io.realworld.angular.conduit.dto.CommonResponse;
 import io.realworld.angular.conduit.dto.ProfileDTO;
-import io.realworld.angular.conduit.exception.NotFoundException;
+import io.realworld.angular.conduit.exceptionshandler.exception.NotFoundException;
 import io.realworld.angular.conduit.mapper.ProfileMapper;
 import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.repository.UserRepository;
@@ -21,28 +22,34 @@ public class ProfileServiceImpl implements ProfileService {
     private final ProfileMapper profileMapper;
 
     @Override
-    public ResponseEntity<ProfileDTO> getProfileByUsername(String username) {
+    public ResponseEntity<CommonResponse<ProfileDTO>> getProfileByUsername(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("Profile not found"));
-        return ResponseEntity.ok(profileMapper.toProfile(user));
+        CommonResponse<ProfileDTO> commonResponse = new CommonResponse<>();
+        commonResponse.add("profile",profileMapper.toProfile(user));
+        return ResponseEntity.ok(commonResponse);
     }
 
     @Override
-    public ResponseEntity<ProfileDTO> followToProfile(String username, Principal principal) {
+    public ResponseEntity<CommonResponse<ProfileDTO>> followToProfile(String username, Principal principal) {
         User user = userRepository.findByUsername(principal.getName()).orElseThrow(() -> new NotFoundException("Profile not found"));
         profileExtension.addFollow(
                     user.getId(),
                     userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("Profile not found")).getId()
                 );
-        return ResponseEntity.ok(profileMapper.toProfile(user));
+        CommonResponse<ProfileDTO> commonResponse = new CommonResponse<>();
+        commonResponse.add("profile",profileMapper.toProfile(user));
+        return ResponseEntity.ok(commonResponse);
     }
 
     @Override
-    public ResponseEntity<ProfileDTO> unfollowFromProfile(String username, Principal principal) {
+    public ResponseEntity<CommonResponse<ProfileDTO>> unfollowFromProfile(String username, Principal principal) {
         User user = userRepository.findByUsername(principal.getName()).orElseThrow(() -> new NotFoundException("Profile not found"));
         profileExtension.unfollow(
                 user.getId(),
                 userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("Profile not found")).getId()
         );
-        return ResponseEntity.ok(profileMapper.toProfile(user));
+        CommonResponse<ProfileDTO> commonResponse = new CommonResponse<>();
+        commonResponse.add("profile", profileMapper.toProfile(user));
+        return ResponseEntity.ok(commonResponse);
     }
 }

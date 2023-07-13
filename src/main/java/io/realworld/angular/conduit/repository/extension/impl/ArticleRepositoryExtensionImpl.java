@@ -1,7 +1,5 @@
 package io.realworld.angular.conduit.repository.extension.impl;
 
-import io.realworld.angular.conduit.dto.ArticleDTO;
-import io.realworld.angular.conduit.exception.NotFoundException;
 import io.realworld.angular.conduit.mapper.ArticleWithOwtDto;
 import io.realworld.angular.conduit.model.Article;
 import io.realworld.angular.conduit.model.Tag;
@@ -9,8 +7,6 @@ import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.repository.UserRepository;
 import io.realworld.angular.conduit.repository.extension.ArticleRepositoryExtension;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 

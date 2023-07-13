@@ -19,6 +19,4 @@ public interface ArticleRepository extends JpaRepository<Article,Long>, LikesExt
     boolean isFavorited(Long userId, Long id);
 
 
-//    Optional<Object> getArticlesPageable(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
-
 }

@@ -3,6 +3,7 @@ package io.realworld.angular.conduit.mapper;
 import io.realworld.angular.conduit.dto.ArticleDTO;
 import io.realworld.angular.conduit.dto.ProfileDTO;
 import io.realworld.angular.conduit.model.Article;
+import io.realworld.angular.conduit.model.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,7 @@ public class ArticleWithOwtDto {
                 article.getTitle(),
                 article.getDescription(),
                 article.getBody(),
-                article.getTagList().stream().map(TagMapper::toDto).collect(Collectors.toList()),
+                article.getTagList().stream().map(Tag::getName).collect(Collectors.toList()),
                 article.getCreatedAt(),
                 article.getUpdatedAt(),
                 false,

@@ -18,13 +18,12 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
 
-
     @GetMapping("/{slug}/comments")
     public ResponseEntity<CommonResponse<List<CommentDTO>>> getCommentsBySlug(@PathVariable String slug){
         return commentService.getCommentsBySlug(slug);
     }
     @PostMapping("/{slug}/comments")
-    public ResponseEntity<CommentDTO> addCommentBySlug(@PathVariable String slug, @RequestBody CommentDTO comment, Principal principal){
+    public ResponseEntity<CommonResponse<CommentDTO>> addCommentBySlug(@PathVariable String slug, @RequestBody CommentDTO comment, Principal principal){
         return commentService.addCommentBySlug(slug, comment, principal);
     }
 

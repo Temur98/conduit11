@@ -2,19 +2,14 @@ package io.realworld.angular.conduit.mapper;
 
 import io.realworld.angular.conduit.dto.ArticleDTO;
 import io.realworld.angular.conduit.dto.ProfileDTO;
-import io.realworld.angular.conduit.exception.NotFoundException;
+import io.realworld.angular.conduit.exceptionshandler.exception.NotFoundException;
 import io.realworld.angular.conduit.model.Article;
 import io.realworld.angular.conduit.model.Tag;
 import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.repository.ArticleRepository;
 import io.realworld.angular.conduit.repository.TagRepository;
 import io.realworld.angular.conduit.repository.UserRepository;
-import io.realworld.angular.conduit.repository.extension.LikesExtension;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.Context;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,8 @@
 package io.realworld.angular.conduit.config;
 
 import io.realworld.angular.conduit.customexseption.TokenValidationException;
-import io.realworld.angular.conduit.utility.JwtUtility;
+import io.realworld.angular.conduit.exceptionshandler.exception.JwtTokeNotValidExceptions;
+import io.realworld.angular.conduit.utility.JWTUtility;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,27 +23,31 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtValidatorFilter extends OncePerRequestFilter {
-    private final JwtUtility jwtUtility;
+    private final JWTUtility jwtUtility;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String value = request.getHeader("Authorization");
-        if (value != null) {
-            value = value.substring(value.indexOf(" ") + 1);
-            try {
-                if (jwtUtility.validate(value)) {
-                    String username = jwtUtility.getUsername(value);
-                    Collection<? extends GrantedAuthority> authorities = jwtUtility.getAuthorities(value);
-                    Authentication auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
+        String token = request.getHeader("Authorization");
 
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+        if(token != null) {
+            try {
+                token = token.substring(6);
+                if (jwtUtility.validate(token)) {
+                    String username = jwtUtility.getUsername(token);
+                    Collection<? extends GrantedAuthority> authorities = jwtUtility.getAuthorities(token);
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(
+                            username,
+                            null,
+                            authorities
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else {
-                    throw new TokenValidationException("token not valid");
+                    throw new JwtTokeNotValidExceptions("Jwt token is not validated");
                 }
-            } catch (Exception ex) {
-                log.info("token validation exception {}", ex.getMessage());
+            } catch (Exception e) {
+                log.info("Exception occurred: ", e);
             }
         }
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request,response);
     }
 }

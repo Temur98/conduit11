@@ -1,8 +1,7 @@
 package io.realworld.angular.conduit.mapper;
 
-import io.realworld.angular.conduit.config.JWTSecurityGeneratorFilter;
 import io.realworld.angular.conduit.dto.UserDTO;
-import io.realworld.angular.conduit.exception.NotRegisteredException;
+import io.realworld.angular.conduit.exceptionshandler.exception.NotRegisteredException;
 import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.utility.JWTUtility;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,7 @@ public class UserMapper {
         if(userDTO == null) return null;
         return new User(
                 userDTO.id(),
-                userDTO.userName(),
+                userDTO.username(),
                 userDTO.bio(),
                 userDTO.password(),
                 userDTO.email(),
@@ -48,8 +47,9 @@ public class UserMapper {
                     user.getPassword(),
                     user.getEmail(),
                     user.getImage(),
-                    token,
-                    false
+                    false,
+                    token
+
             );
         }
         throw new NotRegisteredException("User not registered");
