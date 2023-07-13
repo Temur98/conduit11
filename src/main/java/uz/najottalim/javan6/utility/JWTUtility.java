@@ -15,7 +15,7 @@ import java.util.Date;
 
 @Component
 public class JWTUtility {
-    private static final int expireInMs = 6000*1000;
+    private static final int expireInMs = 60000*1000;
     private static final String secretKey = "myBankingAppForSimpleBankServices";
 
     private static final Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));

@@ -181,5 +181,17 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.deleteById(id);
     }
 
+    @Override
+    public ResponseEntity<ArticleResponse> updateArticle(String slug, ArticleResponse articleResponse) {
 
+        Long id = Long.parseLong(slug.substring(slug.lastIndexOf("-")+1));
+        articleRepository.findById(id)
+                .orElseThrow(()-> new NoResourceFoundException(" article not found"));
+        articleResponse.getArticle().setId(id);
+        Profile profile = profileRepository.findByUserUsername(articleResponse.getArticle().getProfileDto().getUsername())
+                .orElseThrow(() -> new NoResourceFoundException("user not found"));
+        Article save = articleRepository.save(articleMapper.toEntity(articleResponse.getArticle(), profile));
+
+        return ResponseEntity.ok(new ArticleResponse(articleMapper.toDto(save)));
+    }
 }

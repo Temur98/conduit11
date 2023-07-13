@@ -28,4 +28,6 @@ public interface ArticleService {
     ResponseEntity<ArticleResponse> deleteLike(String slug);
 
     void deleteArticle(String slug);
+
+    ResponseEntity<ArticleResponse> updateArticle(String slug, ArticleResponse articleResponse);
 }

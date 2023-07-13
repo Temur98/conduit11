@@ -68,4 +68,9 @@ public class ArticleController {
         articleService.deleteArticle(slug);
     }
 
+    @PutMapping("/{slug}")
+    public ResponseEntity<ArticleResponse> updateArticle(@PathVariable String slug, @RequestBody ArticleResponse articleResponse){
+        return  articleService.updateArticle(slug,articleResponse);
+    }
+
 }
