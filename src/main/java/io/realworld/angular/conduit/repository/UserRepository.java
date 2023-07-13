@@ -17,5 +17,5 @@ public interface UserRepository extends JpaRepository<User,Long> {
             "where a.author_id = ? and f.follower_id = ?", nativeQuery = true)
     Boolean isFollowedToArticleOwner(Long authorId, Long userId);
 
-
+    Optional<User> findByEmail(String email);
 }

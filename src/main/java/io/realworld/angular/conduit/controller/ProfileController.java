@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/profiles")
 @Slf4j
@@ -20,13 +22,13 @@ public class ProfileController {
     }
 
     @PostMapping("/{username}/follow")
-    public ResponseEntity<ProfileDTO> followToProfile(@PathVariable String username) {
-        return profileService.followToProfile(username);
+    public ResponseEntity<ProfileDTO> followToProfile(@PathVariable String username, Principal principal) {
+        return profileService.followToProfile(username,principal);
     }
 
     @DeleteMapping("/{username}/follow")
-    public ResponseEntity<ProfileDTO> unfollowFromProfile(@PathVariable String username) {
-        return profileService.unfollowFromProfile(username);
+    public ResponseEntity<ProfileDTO> unfollowFromProfile(@PathVariable String username, Principal principal) {
+        return profileService.unfollowFromProfile(username,principal);
     }
 
 

@@ -20,7 +20,7 @@ public class TagController {
     private final TagService tagService;
 
     @GetMapping
-    public ResponseEntity<CommonResponse<List<TagDTO>>> getAll (){
+    public ResponseEntity<CommonResponse<List<String>>> getAll (){
         return tagService.getAll();
     }
 

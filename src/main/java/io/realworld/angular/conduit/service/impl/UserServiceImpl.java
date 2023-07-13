@@ -3,6 +3,8 @@ package io.realworld.angular.conduit.service.impl;
 
 import io.realworld.angular.conduit.dto.UserDTO;
 import io.realworld.angular.conduit.exception.NotFoundException;
+import io.realworld.angular.conduit.exception.NotRegisteredException;
+import io.realworld.angular.conduit.exception.SimpleException;
 import io.realworld.angular.conduit.mapper.UserMapper;
 import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.repository.UserRepository;
@@ -15,63 +17,73 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return new org.springframework.security.core.userdetails.User(username, user.getPassword(), Collections.singleton(new SimpleGrantedAuthority("default")));
+    }
+
 
     @Override
     public ResponseEntity<UserDTO> registerUser(UserDTO userDTO) {
-        if(userDTO == null) {
-            throw new NotFoundException("user not found");
-        }
-        User user= userMapper.toEntity(userDTO);
-        User save = userRepository.save(user);
+        userRepository.findByUsername(userDTO.userName()).ifPresent(user -> {
+            throw new SimpleException("Username already exists");
+        });
+        userRepository.findByEmail(userDTO.userName()).ifPresent(user -> {
+            throw new SimpleException("Email already exists");
+        });
+
+        User entity = userMapper.toEntity(userDTO);
+        String encode = passwordEncoder.encode(entity.getPassword());
+        entity.setPassword(encode);
+
+        User save = userRepository.save(entity);
+
+        Authentication auth = new UsernamePasswordAuthenticationToken(save,null,Collections.singleton(new SimpleGrantedAuthority("user")));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         return ResponseEntity.ok(userMapper.toDto(save));
     }
 
     @Override
     public ResponseEntity<UserDTO> updateUser(UserDTO userDTO) {
-        User user = userMapper.toEntity(userDTO);
-        User user1 = userRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new NotFoundException("user not found"));
-        User save = userRepository.save(user1);
-
-        return ResponseEntity.ok(userMapper.toDto(save));
+        return null;
     }
 
     @Override
-    public ResponseEntity<UserDTO> loginUser(UserDTO user) {
-        User user1 = userMapper.toEntity(user);
-        User user2 = userRepository.findByUsername(user1.getUsername())
-                .orElseThrow(() -> new NotFoundException("user not found"));
-        SecurityContext context = SecurityContextHolder.getContext();
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user2, null, List.of(new SimpleGrantedAuthority("user")));
-        context.setAuthentication(usernamePasswordAuthenticationToken);
-        return ResponseEntity.ok(userMapper.toDto(user2));
+    public ResponseEntity<UserDTO> loginUser(UserDTO userDTO) {
+        User user = userRepository.findByUsername(userDTO.userName()).orElseThrow(() -> new NotFoundException("Username not found"));
+        String encode = passwordEncoder.encode(userDTO.password());
+        System.out.println(encode);
+        if (encode.equals(user.getPassword())) {
+            SecurityContext context = SecurityContextHolder.getContext();
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user, null, List.of(new SimpleGrantedAuthority("user")));
+            context.setAuthentication(usernamePasswordAuthenticationToken);
+            return ResponseEntity.ok(userMapper.toDto(user));
+        }
+
+
+        throw new NotRegisteredException("User not authentication");
     }
 
     @Override
-
     public ResponseEntity<UserDTO> getCurrentUser() {
-     return null;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-
-        User account = userRepository.findByUsername(userName)
-                .orElseThrow(() -> new UsernameNotFoundException("cannot load user: "));
-
-        return new org.springframework.security.core.userdetails.User(userName, account.getPassword(), List.of(new SimpleGrantedAuthority("user")));
+        return null;
     }
 }
