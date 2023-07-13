@@ -19,4 +19,9 @@ public class User {
     private String password;
     private String email;
     private String image;
+
+    public User(Object o, String s, String url, boolean b, User save) {
+    }
 }
+
+

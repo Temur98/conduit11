@@ -1,4 +1,4 @@
-package io.realworld.angular.conduit.exception;
+package io.realworld.angular.conduit.exceptionshandler.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {

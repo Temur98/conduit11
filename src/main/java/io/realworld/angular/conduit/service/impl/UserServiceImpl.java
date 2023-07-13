@@ -1,10 +1,13 @@
 package io.realworld.angular.conduit.service.impl;
 
 
+import io.realworld.angular.conduit.customexseption.EmailAlreadyRegisteredException;
+import io.realworld.angular.conduit.customexseption.NoResourceFoundException;
+import io.realworld.angular.conduit.customexseption.UsernameAlreadyRegisteredException;
+import io.realworld.angular.conduit.dto.CommonResponse;
 import io.realworld.angular.conduit.dto.UserDTO;
-import io.realworld.angular.conduit.exception.NotFoundException;
-import io.realworld.angular.conduit.exception.NotRegisteredException;
-import io.realworld.angular.conduit.exception.SimpleException;
+import io.realworld.angular.conduit.exceptionshandler.exception.NotFoundException;
+import io.realworld.angular.conduit.exceptionshandler.exception.NotRegisteredException;
 import io.realworld.angular.conduit.mapper.UserMapper;
 import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.repository.UserRepository;
@@ -41,49 +44,82 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
-    public ResponseEntity<UserDTO> registerUser(UserDTO userDTO) {
-        userRepository.findByUsername(userDTO.userName()).ifPresent(user -> {
-            throw new SimpleException("Username already exists");
-        });
-        userRepository.findByEmail(userDTO.userName()).ifPresent(user -> {
-            throw new SimpleException("Email already exists");
-        });
+    public ResponseEntity<CommonResponse<UserDTO>> registerUser(CommonResponse<UserDTO> userDTOCommonResponse) {
+        UserDTO userDTO = userDTOCommonResponse.getProperties().get("user");
+        User user = userMapper.toEntity(userDTO);
+        System.out.println(user);
+        userRepository.findByUsername(user.getUsername())
+                .ifPresent(value -> {throw new UsernameAlreadyRegisteredException("has already been taken");
+                });
 
-        User entity = userMapper.toEntity(userDTO);
-        String encode = passwordEncoder.encode(entity.getPassword());
-        entity.setPassword(encode);
+        userRepository.findByEmail(user.getEmail())
+                .ifPresent(value -> {throw new EmailAlreadyRegisteredException("has already been taken");
+                });
 
-        User save = userRepository.save(entity);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setImage("https://www.google.com/search?q=imige&oq=imige&aqs=chrome..69i57j46i512l2j0i512l2j46i175i199i512j0i512l3.16049j0j7&sourceid=chrome&ie=UTF-8#vhid=9eM66gXcGVzSiM&vssid=l");
 
-        Authentication auth = new UsernamePasswordAuthenticationToken(save,null,Collections.singleton(new SimpleGrantedAuthority("user")));
+        userRepository.save(user);
+        Authentication auth = new UsernamePasswordAuthenticationToken
+                (user.getEmail(), null,List.of(new SimpleGrantedAuthority("user")));
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        return ResponseEntity.ok(userMapper.toDto(save));
+        CommonResponse<UserDTO> commonResponse = new CommonResponse<>();
+        commonResponse.add("user", userMapper.toDto(user));
+
+        return ResponseEntity.ok(commonResponse);
     }
 
     @Override
-    public ResponseEntity<UserDTO> updateUser(UserDTO userDTO) {
-        return null;
+    public ResponseEntity<CommonResponse<UserDTO>> updateUser(UserDTO userDTO) {
+        User user = userMapper.toEntity(userDTO);
+        User profile = userRepository.findByEmail(user.getEmail())
+                .orElseThrow(() -> new NoResourceFoundException("user not found"));
+        userRepository.findByUsername(user.getUsername())
+                .ifPresent(value -> {throw new EmailAlreadyRegisteredException("has already ben taken");
+                });
+        userRepository.findByEmail(user.getEmail())
+                .ifPresent(value -> {throw new EmailAlreadyRegisteredException("has already ben taken");
+                });
+
+        profile.setBio(user.getBio());
+        profile.setImage(user.getImage());
+        profile.setUsername(user.getUsername());
+        profile.setPassword(user.getPassword());
+        profile.setEmail(user.getEmail());
+        User save = userRepository.save(profile);
+
+        CommonResponse<UserDTO> commonResponse = new CommonResponse<>();
+        commonResponse.add("user", userMapper.toDto(save));
+        return ResponseEntity.ok(commonResponse);
     }
 
     @Override
-    public ResponseEntity<UserDTO> loginUser(UserDTO userDTO) {
-        User user = userRepository.findByUsername(userDTO.userName()).orElseThrow(() -> new NotFoundException("Username not found"));
-        String encode = passwordEncoder.encode(userDTO.password());
-        System.out.println(encode);
-        if (encode.equals(user.getPassword())) {
-            SecurityContext context = SecurityContextHolder.getContext();
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user, null, List.of(new SimpleGrantedAuthority("user")));
-            context.setAuthentication(usernamePasswordAuthenticationToken);
-            return ResponseEntity.ok(userMapper.toDto(user));
+    public ResponseEntity<CommonResponse<UserDTO>> loginUser(CommonResponse<UserDTO> userDTO) {
+        UserDTO userDTO1 =userDTO.getProperties().get("user");
+        User user1 = userMapper.toEntity(userDTO1);
+        User user = userRepository
+                .findByEmail(user1.getEmail())
+                .orElseThrow(() -> new NoResourceFoundException("Not found"));
+        if( ! passwordEncoder.matches(user1.getPassword(),user.getPassword())){
+            throw  new NoResourceFoundException("not authenticated");
         }
+        Authentication auth = new UsernamePasswordAuthenticationToken
+                (user.getEmail(), null,List.of(new SimpleGrantedAuthority("user")));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+            CommonResponse<UserDTO> commonResponse = new CommonResponse<>();
+            commonResponse.add("user",userMapper.toDto(user));
+            return ResponseEntity.ok(commonResponse);
 
-
-        throw new NotRegisteredException("User not authentication");
     }
 
     @Override
-    public ResponseEntity<UserDTO> getCurrentUser() {
-        return null;
+    public ResponseEntity<CommonResponse<UserDTO>> getCurrentUser() {
+        Authentication authentication =SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new NoResourceFoundException("user not found"));
+        CommonResponse<UserDTO> commonResponse = new CommonResponse<>();
+        commonResponse.add("user", userMapper.toDto(user));
+        return ResponseEntity.ok(commonResponse);
     }
 }

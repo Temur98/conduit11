@@ -1,6 +1,7 @@
 package io.realworld.angular.conduit.dto;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
+import lombok.With;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,7 +16,9 @@ public record ArticleDTO(
         List<String> tagList,
         LocalDate createdAt,
         LocalDate updateAt,
+        @With
         Boolean favorited,
+        @With
         Long favoritesCount,
         ProfileDTO author
 ) {
