@@ -1,7 +1,7 @@
 package io.realworld.angular.conduit.config;
 
-import io.realworld.angular.conduit.customexseption.TokenValidationException;
-import io.realworld.angular.conduit.exceptionshandler.exception.JwtTokeNotValidExceptions;
+
+import io.realworld.angular.conduit.exception.JwtTokeNotValidExceptions;
 import io.realworld.angular.conduit.utility.JWTUtility;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,17 +13,20 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collection;
-
-@Component
-@RequiredArgsConstructor
+import java.util.Collections;
+import java.util.Optional;
 @Slf4j
-public class JwtValidatorFilter extends OncePerRequestFilter {
+@Service
+@RequiredArgsConstructor
+public class JWTSecurityCheckFilter extends OncePerRequestFilter {
     private final JWTUtility jwtUtility;
+
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

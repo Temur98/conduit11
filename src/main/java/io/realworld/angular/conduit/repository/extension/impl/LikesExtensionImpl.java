@@ -46,6 +46,7 @@ public class LikesExtensionImpl implements LikesExtension {
     }
 
     @Override
+    @Transactional
     public void removeLike(Long articleId, Long userId) {
         entityManager.createNativeQuery("DELETE FROM LIKES WHERE ARTICLE_ID = ? AND USER_ID = ?")
                 .setParameter(1, articleId)

@@ -1,7 +1,7 @@
 package io.realworld.angular.conduit.service;
 
 import io.realworld.angular.conduit.dto.CommentDTO;
-import io.realworld.angular.conduit.dto.CommonResponse;
+import io.realworld.angular.conduit.dto.response.CommonResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;

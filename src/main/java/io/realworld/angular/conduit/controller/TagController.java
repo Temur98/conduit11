@@ -1,7 +1,6 @@
 package io.realworld.angular.conduit.controller;
 
-import io.realworld.angular.conduit.dto.CommonResponse;
-import io.realworld.angular.conduit.dto.TagDTO;
+import io.realworld.angular.conduit.dto.response.CommonResponse;
 import io.realworld.angular.conduit.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -55,7 +55,8 @@ public class ArticleMapper {
         if (articleDTO == null) return null;
         List<Tag> tagList = new ArrayList<>();
         articleDTO.tagList().forEach(tag -> tagList.add(tagRepository.findByName(tag).orElseThrow(() -> new NotFoundException("Tag not found"))));
-        User user = userRepository.findByUsername(articleDTO.author().username()).orElseThrow(() -> new NotFoundException("User not found"));
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new NotFoundException("User not found"));
 
         return new Article(
                 articleDTO.id(),
