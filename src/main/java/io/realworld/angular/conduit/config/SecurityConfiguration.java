@@ -3,6 +3,9 @@ package io.realworld.angular.conduit.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -44,6 +47,8 @@ public class SecurityConfiguration {
                                 .permitAll()
         );
         http.addFilterBefore(jwtSecurityCheckFilter, BasicAuthenticationFilter.class);
+        http.addFilterBefore(jwtSecurityCheckFilter, BasicAuthenticationFilter.class);
+
         http.httpBasic(Customizer.withDefaults());
         return http.build();
     }
@@ -52,4 +57,5 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
 }

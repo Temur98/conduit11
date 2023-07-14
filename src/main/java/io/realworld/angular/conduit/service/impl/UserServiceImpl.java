@@ -2,6 +2,7 @@ package io.realworld.angular.conduit.service.impl;
 
 
 import io.realworld.angular.conduit.dto.UserDTO;
+import io.realworld.angular.conduit.dto.response.CommonResponse;
 import io.realworld.angular.conduit.dto.response.UserResponse;
 import io.realworld.angular.conduit.exception.NotFoundException;
 import io.realworld.angular.conduit.exception.NotRegisteredException;
@@ -93,7 +94,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public ResponseEntity<UserDTO> getCurrentUser() {
-        return null;
+    public ResponseEntity<CommonResponse> getCurrentUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(email);
+        if (email != null){
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new NotRegisteredException("Current user is not present"));
+            CommonResponse commonResponse = new CommonResponse();
+            commonResponse.add("user",userMapper.toDto(user));
+            return ResponseEntity.ok(commonResponse);
+        }
+        throw new NotRegisteredException("Current user is not present");
     }
 }

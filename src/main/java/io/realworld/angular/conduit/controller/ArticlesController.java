@@ -3,7 +3,6 @@ package io.realworld.angular.conduit.controller;
 import io.realworld.angular.conduit.dto.ArticleDTO;
 import io.realworld.angular.conduit.dto.response.CommonResponse;
 import io.realworld.angular.conduit.groups.OnCreate;
-import io.realworld.angular.conduit.repository.CommentRepository;
 import io.realworld.angular.conduit.service.ArticleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ import java.util.Optional;
 @RequestMapping("/articles")
 @Slf4j
 @RequiredArgsConstructor
-
+@Validated
 public class ArticlesController {
     private final ArticleService articleService;
 
@@ -39,6 +38,11 @@ public class ArticlesController {
     @GetMapping("/{slug}")
     public ResponseEntity<CommonResponse<ArticleDTO>> getArticleBySlag(@PathVariable String slug){
         return articleService.getArticleBySlag(slug);
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<CommonResponse<ArticleDTO>> getOwnUserArticles(@RequestParam Optional<Integer> limit, @RequestParam Optional<Integer> offset){
+        return articleService.getOwnUserArticleByPagination(limit, offset);
     }
 
     @PutMapping("/{slug}")
@@ -59,8 +63,8 @@ public class ArticlesController {
 
     @PostMapping("/")
     @Validated(OnCreate.class)
-    public ResponseEntity<Map<String,ArticleDTO>> addArticle(@Valid @RequestBody Map<String,ArticleDTO> articleMap, Principal principal){
-        return articleService.addArticle(articleMap,principal);
+    public ResponseEntity<Map<String,ArticleDTO>> addArticle(@Valid @RequestBody Map<String,ArticleDTO> articleMap){
+        return articleService.addArticle(articleMap);
     }
 
     @PutMapping

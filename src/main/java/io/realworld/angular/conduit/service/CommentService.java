@@ -10,7 +10,7 @@ import java.util.List;
 public interface CommentService {
     ResponseEntity<CommonResponse<List<CommentDTO>>> getCommentsBySlug(String slug);
 
-    ResponseEntity<CommentDTO> addCommentBySlug(String slug, CommentDTO comment, Principal principal);
+    ResponseEntity<CommonResponse<CommentDTO>> addCommentBySlug(String slug, CommonResponse<CommentDTO> commonResponse);
 
     void deleteComment(String slug, Long commentId);
 }

@@ -1,6 +1,7 @@
 package io.realworld.angular.conduit.controller;
 
 import io.realworld.angular.conduit.dto.UserDTO;
+import io.realworld.angular.conduit.dto.response.CommonResponse;
 import io.realworld.angular.conduit.dto.response.UserResponse;
 import io.realworld.angular.conduit.groups.OnCreate;
 import io.realworld.angular.conduit.groups.OnUpdate;
@@ -31,7 +32,7 @@ public class UsersController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<UserDTO> getCurrentUser(){
+    public ResponseEntity<CommonResponse> getCurrentUser(){
         return userService.getCurrentUser();
     }
 

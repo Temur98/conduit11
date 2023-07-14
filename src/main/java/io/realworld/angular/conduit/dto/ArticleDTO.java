@@ -1,23 +1,24 @@
 package io.realworld.angular.conduit.dto;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@JsonRootName("article")
-public record ArticleDTO(
-        Long id,
-        String slug,
-        String title,
-        String description,
-        String body,
-        List<String> tagList,
-        LocalDate createdAt,
-        LocalDate updateAt,
-        Boolean favorited,
-        Long favoritesCount,
-        ProfileDTO author
-) {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ArticleDTO {
+    private Long id;
+    private String slug;
+    private String title;
+    private String description;
+    private String body;
+    private List<String> tagList;
+    private LocalDate createdAt;
+    private LocalDate updateAt;
+    private Boolean favourited;
+    private Long favoritesCount;
+    private ProfileDTO author;
 
 }

@@ -12,8 +12,8 @@ import java.time.LocalDate;
 public record CommentDTO(
         Long id,
         String body,
-        LocalDate createAt,
-        User user,
-        Article article
+        LocalDate createdAt,
+        LocalDate updatedAt,
+        User author
 ) {
 }

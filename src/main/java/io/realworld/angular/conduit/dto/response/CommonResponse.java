@@ -18,4 +18,8 @@ public class CommonResponse<T> {
     public Map<String, T> getProperties() {
         return properties;
     }
+
+    public void clearProperties(){
+        this.properties.clear();
+    }
 }
