@@ -18,9 +18,9 @@ import java.util.List;
 public class TagController {
     private final TagService tagService;
 
+
     @GetMapping
-    public ResponseEntity<CommonResponse<List<String>>> getAll (){
+    public ResponseEntity<CommonResponse<List<String>>> getAll() {
         return tagService.getAll();
     }
-
 }

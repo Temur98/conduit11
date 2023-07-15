@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class UserMapper {
     private final JWTUtility jwtUtility;
 
+
     public User toEntity(UserDTO userDTO){
         if(userDTO == null) return null;
         return new User(
@@ -47,9 +48,8 @@ public class UserMapper {
                     user.getPassword(),
                     user.getEmail(),
                     user.getImage(),
-                    false,
-                    token
-
+                    token,
+                    false
             );
         }
         throw new NotRegisteredException("User not registered");

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -19,25 +20,25 @@ public class ExceptionsHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDTO notFoundHandler(NoResourceFoundException ex){
         ex.printStackTrace();
-        return ErrorDTO.builder().errors(Map.of("error ",List.of(ex.getMessage())).toString()).build();
+        return ErrorDTO.builder().error(Collections.singletonList(Map.of("error ", List.of(ex.getMessage())).toString())).build();
     }
     @ExceptionHandler(EmailAlreadyRegisteredException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ErrorDTO emailAlreadyRegisteredHandler(EmailAlreadyRegisteredException ex){
         ex.printStackTrace();
-        return ErrorDTO.builder().errors(Map.of("email ",List.of(ex.getMessage())).toString()).build();
+        return ErrorDTO.builder().error(Collections.singletonList(Map.of("email ", List.of(ex.getMessage())).toString())).build();
     }
 
     @ExceptionHandler(UsernameAlreadyRegisteredException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ErrorDTO usernameAlreadyRegisteredHandler(UsernameAlreadyRegisteredException ex){
         ex.printStackTrace();
-        return ErrorDTO.builder().errors(Map.of("username ",List.of(ex.getMessage())).toString()).build();
+        return ErrorDTO.builder().error(Collections.singletonList(Map.of("username ", List.of(ex.getMessage())).toString())).build();
     }
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDTO notFoundHandler(Throwable ex){
         ex.printStackTrace();
-        return ErrorDTO.builder().errors(Map.of("error ",List.of(ex.getMessage())).toString()).build();
+        return ErrorDTO.builder().error(Collections.singletonList(Map.of("error ", List.of(ex.getMessage())).toString())).build();
     }
 }

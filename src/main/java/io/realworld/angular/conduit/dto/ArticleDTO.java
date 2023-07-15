@@ -15,6 +15,7 @@ public record ArticleDTO(
         String body,
         List<String> tagList,
         LocalDate createdAt,
+        @With
         LocalDate updateAt,
         @With
         Boolean favorited,

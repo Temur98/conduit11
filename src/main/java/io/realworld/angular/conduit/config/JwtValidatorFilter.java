@@ -1,7 +1,7 @@
 package io.realworld.angular.conduit.config;
 
 
-import io.realworld.angular.conduit.exception.JwtTokeNotValidExceptions;
+import io.realworld.angular.conduit.exceptionshandler.exception.JwtTokeNotValidExceptions;
 import io.realworld.angular.conduit.utility.JWTUtility;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,14 +18,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class JWTSecurityCheckFilter extends OncePerRequestFilter {
+public class JwtValidatorFilter extends OncePerRequestFilter {
     private final JWTUtility jwtUtility;
-
 
 
     @Override

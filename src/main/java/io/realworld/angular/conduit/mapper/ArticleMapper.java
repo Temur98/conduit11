@@ -24,17 +24,19 @@ public class ArticleMapper {
     private final TagRepository tagRepository;
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
+    private final TagMapper tagMapper;
 
-    public ArticleDTO toDto(Article article){
+    public ArticleDTO toDto(Article article) {
         if (article == null) return null;
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> user = userRepository.findByUsername(name);
+        String email     = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> user = userRepository.findByEmail(email);
         Long userId = null;
-        if (user.isPresent()){
+        if (user.isPresent()) {
             userId = user.get().getId();
         }
         User author = article.getAuthor();
-        ProfileDTO profileDTO = new ProfileDTO(author.getUsername(),author.getBio(),author.getImage(),true);
+        ProfileDTO profileDTO = new ProfileDTO(author.getUsername(), author.getBio(), author.getImage(), true);
+
         return new ArticleDTO(
                 article.getId(),
                 toSlug(article.getTitle(), article.getId()),
@@ -44,19 +46,17 @@ public class ArticleMapper {
                 article.getTagList().stream().map(Tag::getName).toList(),
                 article.getCreatedAt(),
                 article.getUpdatedAt(),
-                userId != null && articleRepository.isFavorited(userId, article.getId()),
+                articleRepository.isFavorited(userId, article.getId()) == 0,
                 articleRepository.getFavoritesCount(article.getId()),
                 profileDTO
         );
     }
 
 
-    public Article toEntity(ArticleDTO articleDTO){
+    public Article toEntity(ArticleDTO articleDTO) {
         if (articleDTO == null) return null;
-        List<Tag> tagList = new ArrayList<>();
-        articleDTO.tagList().forEach(tag -> tagList.add(tagRepository.findByName(tag).orElseThrow(() -> new NotFoundException("Tag not found"))));
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(name).orElseThrow(() -> new NotFoundException("User not found"));
+        User user = userRepository.findByEmail(name).orElseThrow(() -> new NotFoundException("User not found"));
 
         return new Article(
                 articleDTO.id(),
@@ -65,11 +65,12 @@ public class ArticleMapper {
                 articleDTO.body(),
                 articleDTO.createdAt(),
                 articleDTO.updateAt(),
-                tagList,
+                tagMapper.toEntities(articleDTO.tagList()),
                 Collections.singletonList(null),
                 user
         );
     }
+
 
     private String toSlug(String title,Long id){
         return title.replace(" ", "-")+"-"+id;

@@ -12,24 +12,24 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class ArticleWithOwtDto {
-    public ArticleDTO toDTO(Article article){
-        return article == null ? null : new ArticleDTO(
-                article.getId(),
-                article.getTitle().concat("-").concat(String.valueOf(article.getId())),
-                article.getTitle(),
-                article.getDescription(),
-                article.getBody(),
-                article.getTagList().stream().map(Tag::getName).collect(Collectors.toList()),
-                article.getCreatedAt(),
-                article.getUpdatedAt(),
-                false,
-                1L,
-                article.getAuthor() != null ? new ProfileDTO(
-                        article.getAuthor().getUsername(),
-                        article.getAuthor().getBio(),
-                        article.getAuthor().getImage(),
-                        null
-                ) : null
-        );
-    }
+//    public ArticleDTO toDTO(Article article){
+//        return article == null ? null : new ArticleDTO(
+//                article.getId(),
+//                article.getTitle().concat("-").concat(String.valueOf(article.getId())),
+//                article.getTitle(),
+//                article.getDescription(),
+//                article.getBody(),
+//                article.getTagList().stream().map(Tag::getName).collect(Collectors.toList()),
+//                article.getCreatedAt(),
+//                article.getUpdatedAt(),
+//                false,
+//                1L,
+//                article.getAuthor() != null ? new ProfileDTO(
+//                        article.getAuthor().getUsername(),
+//                        article.getAuthor().getBio(),
+//                        article.getAuthor().getImage(),
+//                        null
+//                ) : null
+//        );
+//    }
 }

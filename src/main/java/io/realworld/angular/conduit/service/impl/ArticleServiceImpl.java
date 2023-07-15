@@ -2,23 +2,23 @@ package io.realworld.angular.conduit.service.impl;
 
 import io.realworld.angular.conduit.dto.ArticleDTO;
 import io.realworld.angular.conduit.dto.response.CommonResponse;
-import io.realworld.angular.conduit.exception.NotFoundException;
+import io.realworld.angular.conduit.exceptionshandler.exception.NotFoundException;
 import io.realworld.angular.conduit.mapper.ArticleMapper;
 import io.realworld.angular.conduit.model.Article;
-import io.realworld.angular.conduit.model.Tag;
 import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.repository.ArticleRepository;
 import io.realworld.angular.conduit.repository.TagRepository;
 import io.realworld.angular.conduit.repository.UserRepository;
 import io.realworld.angular.conduit.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +26,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
-    private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final ArticleMapper articleMapper;
@@ -39,8 +38,9 @@ public class ArticleServiceImpl implements ArticleService {
 
             List<ArticleDTO> articles = allArticles.stream().map(articleMapper::toDto).toList();
 
-            CommonResponse<List<ArticleDTO>> commonResponse = new CommonResponse<>();
+            CommonResponse commonResponse = new CommonResponse<>();
             commonResponse.add("articles", articles);
+            commonResponse.add("articlesCount", articles.size());
             return ResponseEntity.ok(commonResponse);
         }
 
@@ -58,24 +58,14 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ResponseEntity<Map<String,ArticleDTO>> addArticle(Map<String,ArticleDTO> articleMap, Principal principal) {
-        List<Tag> tagList = new ArrayList<>();
+    public ResponseEntity<Map<String,ArticleDTO>> addArticle(Map<String,ArticleDTO> articleMap) {
         ArticleDTO articleDTO = articleMap.get("article");
 
-        articleDTO.tagList().forEach(tagDTO -> {
-            Optional<Tag> tag = tagRepository.findByName(tagDTO);
-            if (tag.isEmpty()) {
-                Tag saveTag = tagRepository.save(new Tag(null, tagDTO));
-                tagList.add(saveTag);
-            } else {
-                tagList.add(tag.get());
-            }
-        });
-
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Article entity = articleMapper.toEntity(articleDTO);
-        entity.setTagList(tagList);
+        entity.setAuthor(userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found")));
+        entity.setCreatedAt(LocalDate.now());
 
-        entity.setAuthor(userRepository.findByUsername(principal.getName()).orElseThrow(() -> new NotFoundException("User not found")));
         Article save = articleRepository.save(entity);
 
         return ResponseEntity.ok(Map.of("article", articleMapper.toDto(save)));
@@ -84,6 +74,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ResponseEntity<ArticleDTO> updateArticle(ArticleDTO articleDTO) {
         articleRepository.findById(articleDTO.id()).orElseThrow(() -> new NotFoundException("Article not found"));
+        articleDTO.withUpdateAt(LocalDate.now());
         Article save = articleRepository.save(articleMapper.toEntity(articleDTO));
         return ResponseEntity.ok(articleMapper.toDto(save));
     }
@@ -119,5 +110,21 @@ public class ArticleServiceImpl implements ArticleService {
     public void deleteArticle(String slug) {
         Long id = CommonService.getIdBySlug(slug);
         articleRepository.delete(articleRepository.findById(id).orElseThrow(() -> new NotFoundException("Article not found")));
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<ArticleDTO>> getOwnUserArticleByPagination(Optional<Integer> limit, Optional<Integer> offset) {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(name).orElseThrow(() -> new NotFoundException("User not found"));
+        PageRequest pageRequest = null;
+        if (limit.isPresent() && offset.isPresent()){
+            pageRequest = PageRequest.of(offset.get() / limit.get(), limit.get());
+        }
+        List<Article> articleByAuthorId = articleRepository.findArticleByAuthorId(user.getId(), pageRequest);
+
+        CommonResponse commonResponse = new CommonResponse();
+        commonResponse.add("articles",articleByAuthorId.stream().map(articleMapper::toDto).toList());
+        commonResponse.add("articlesCount",articleByAuthorId.size());
+        return ResponseEntity.ok(commonResponse);
     }
 }

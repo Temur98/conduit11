@@ -3,14 +3,16 @@ package io.realworld.angular.conduit.service.impl;
 
 import io.realworld.angular.conduit.dto.CommentDTO;
 import io.realworld.angular.conduit.dto.response.CommonResponse;
-import io.realworld.angular.conduit.exception.NotFoundException;
+import io.realworld.angular.conduit.exceptionshandler.exception.NotFoundException;
 import io.realworld.angular.conduit.mapper.CommentMapper;
 import io.realworld.angular.conduit.model.Comment;
+import io.realworld.angular.conduit.repository.ArticleRepository;
 import io.realworld.angular.conduit.repository.CommentRepository;
 import io.realworld.angular.conduit.repository.UserRepository;
 import io.realworld.angular.conduit.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -22,6 +24,8 @@ public class CommentServiceImpl implements CommentService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
+    private final ArticleRepository articleRepository;
+
 
     @Override
     public ResponseEntity<CommonResponse<List<CommentDTO>>> getCommentsBySlug(String slug) {
@@ -33,11 +37,16 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ResponseEntity<CommentDTO> addCommentBySlug(String slug, CommentDTO commentDTO, Principal principal) {
+    public ResponseEntity<CommonResponse<CommentDTO>> addCommentBySlug(String slug, CommonResponse<CommentDTO> commonResponse) {
+        CommentDTO commentDTO = commonResponse.getProperties().get("comment");
         Comment entity = commentMapper.toEntity(commentDTO);
-        entity.setUser(userRepository.findByUsername(principal.getName()).orElseThrow(() -> new NotFoundException("User not found")));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        entity.setUser(userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found")));
+        entity.setArticle(articleRepository.findById(CommonService.getIdBySlug(slug)).orElseThrow(() -> new NotFoundException("Article not found")));
         Comment save = commentRepository.save(entity);
-        return ResponseEntity.ok(commentMapper.toDto(save));
+        commonResponse.clearProperties();
+        commonResponse.add("comment",commentMapper.toDto(save));
+        return ResponseEntity.ok(commonResponse);
     }
 
     @Override
