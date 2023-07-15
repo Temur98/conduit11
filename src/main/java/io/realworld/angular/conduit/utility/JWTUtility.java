@@ -17,13 +17,13 @@ import java.util.Date;
 
 @Service
 public class JWTUtility {
-    private static final Integer expireInMs = 3600 * 1000;
+    private static final Integer expireInMs = 60000 * 60 * 24;
 
     private static final String SECRET_KEY = "jxgEQeXHuPq8VdbyYFNkANdudQ53YUn4";
     private final static SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     public String generate(String username, String authorities) {
-        String jwtToken = Jwts.builder()
+        return Jwts.builder()
                 .setSubject("FOR-LOGIN")
                 .setIssuer("MEDIUM")
                 .claim("username", username)
@@ -32,13 +32,12 @@ public class JWTUtility {
                 .setExpiration(new Date(System.currentTimeMillis() + expireInMs))
                 .signWith(key)
                 .compact();
-        return jwtToken;
     }
 
-    public boolean validate(String token) {
+    public boolean validate(String token) throws ExpiredJwtException{
 
-        return getUsername(token) != null &&
-                !isExpired(token)
+        return !isExpired(token)
+        && getUsername(token) != null
                 && getAuthorities(token).size() > 0;
     }
 
@@ -60,7 +59,7 @@ public class JWTUtility {
         return claims.getExpiration().before(new Date(System.currentTimeMillis()));
     }
 
-    private Claims getClaims(String token) {
+    private Claims getClaims(String token) throws ExpiredJwtException {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()

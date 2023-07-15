@@ -47,6 +47,6 @@ public class TagMapper {
     }
 
     public List<Tag> toEntities(List<String> tagList) {
-
+        return saveTags(tagList);
     }
 }

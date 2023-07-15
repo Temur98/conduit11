@@ -1,6 +1,7 @@
 package io.realworld.angular.conduit.controller;
 
 import io.realworld.angular.conduit.dto.ProfileDTO;
+import io.realworld.angular.conduit.dto.response.CommonResponse;
 import io.realworld.angular.conduit.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @GetMapping("/{username}")
-    public ResponseEntity<ProfileDTO> getProfileByUsername(@PathVariable String username) {
+    public ResponseEntity<CommonResponse> getProfileByUsername(@PathVariable String username) {
         return profileService.getProfileByUsername(username);
     }
 

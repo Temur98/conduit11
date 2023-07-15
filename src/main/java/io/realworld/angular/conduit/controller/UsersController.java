@@ -37,8 +37,7 @@ public class UsersController {
     }
 
     @PutMapping("/user")
-    @Validated(OnUpdate.class)
-    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO){
-        return userService.updateUser(userDTO);
+    public ResponseEntity<CommonResponse<UserDTO>> updateUser(@RequestBody CommonResponse<UserDTO> userDTOCommonResponse){
+        return userService.updateUser(userDTOCommonResponse);
     }
 }

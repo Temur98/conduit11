@@ -3,6 +3,7 @@ package io.realworld.angular.conduit.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.session.DisableEncodeUrlFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
@@ -43,13 +45,21 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                     auth ->
                         auth
-                                .anyRequest()
+                                .requestMatchers(HttpMethod.POST,"/users/**")
                                 .permitAll()
+                                .requestMatchers(HttpMethod.GET,"/articles/**")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET,"/tags/**")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET,"/profiles/**")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated()
+
         );
         http.addFilterBefore(jwtSecurityCheckFilter, BasicAuthenticationFilter.class);
-        http.addFilterBefore(jwtSecurityCheckFilter, BasicAuthenticationFilter.class);
 
-        http.httpBasic(Customizer.withDefaults());
+//        http.httpBasic(Customizer.withDefaults());
         return http.build();
     }
 

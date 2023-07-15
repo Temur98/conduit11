@@ -7,5 +7,5 @@ public record ProfileDTO (
         String username,
         String bio,
         String image,
-        Boolean followin){
+        Boolean following){
 }

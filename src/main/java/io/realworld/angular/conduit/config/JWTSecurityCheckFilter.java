@@ -44,11 +44,10 @@ public class JWTSecurityCheckFilter extends OncePerRequestFilter {
                             authorities
                     );
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                } else {
-                    throw new JwtTokeNotValidExceptions("Jwt token is not validated");
                 }
-            } catch (Exception e) {
-                log.info("Exception occurred: ", e);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         }
         filterChain.doFilter(request,response);

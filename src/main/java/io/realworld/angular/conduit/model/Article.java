@@ -35,7 +35,7 @@ public class Article {
             joinColumns = @JoinColumn(name = "article_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<User> users;
+    private List<User> likes;
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;

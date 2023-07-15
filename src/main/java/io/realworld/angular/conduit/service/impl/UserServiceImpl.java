@@ -4,7 +4,6 @@ package io.realworld.angular.conduit.service.impl;
 import io.realworld.angular.conduit.dto.UserDTO;
 import io.realworld.angular.conduit.dto.response.CommonResponse;
 import io.realworld.angular.conduit.dto.response.UserResponse;
-import io.realworld.angular.conduit.exception.NotFoundException;
 import io.realworld.angular.conduit.exception.NotRegisteredException;
 import io.realworld.angular.conduit.exception.SimpleException;
 import io.realworld.angular.conduit.exception.UsernameOrPasswordInvalid;
@@ -55,12 +54,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         User entity = userMapper.toEntity(userDTO);
 
-        System.out.println(entity.getPassword());
         entity.setPassword(passwordEncoder.encode(entity.getPassword()));
-
+        entity.setImage("https://icons.veryicon.com/png/o/system/ali-mom-icon-library/random-user.png"); // default user image
         User save = userRepository.save(entity);
-
-        System.out.println(save.getPassword());
 
         Authentication auth = new UsernamePasswordAuthenticationToken(save.getEmail(),null,Collections.singleton(new SimpleGrantedAuthority("user")));
         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -69,8 +65,33 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public ResponseEntity<UserDTO> updateUser(UserDTO userDTO) {
-        return null;
+    public ResponseEntity<CommonResponse<UserDTO>> updateUser(CommonResponse<UserDTO> userDTOCommonResponse) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.isAuthenticated()){
+            User user = userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new NotRegisteredException("User not registered"));
+            UserDTO userDTO = userDTOCommonResponse.getProperties().get("user");
+            if (userDTO.image() != null){
+                user.setImage(userDTO.image());
+            }
+            if (userDTO.password() != null){
+                user.setPassword(passwordEncoder.encode(userDTO.password()));
+            }
+            if (userDTO.bio() != null){
+                user.setBio(userDTO.bio());
+            }
+            if (userDTO.username() != null){
+                user.setUsername(userDTO.username());
+            }
+
+            System.out.println(user);
+            User save = userRepository.save(user);
+
+            CommonResponse<UserDTO> commonResponse = new CommonResponse<>();
+            commonResponse.add("user",userMapper.toDto(save));
+            return ResponseEntity.ok(commonResponse);
+        }
+
+        throw new SimpleException("User not updated");
     }
 
     @Override
@@ -99,7 +120,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         System.out.println(email);
         if (email != null){
             User user = userRepository.findByEmail(email).orElseThrow(() -> new NotRegisteredException("Current user is not present"));
-            CommonResponse commonResponse = new CommonResponse();
+            CommonResponse<UserDTO> commonResponse = new CommonResponse<>();
             commonResponse.add("user",userMapper.toDto(user));
             return ResponseEntity.ok(commonResponse);
         }

@@ -12,7 +12,7 @@ public interface UserService{
 
     ResponseEntity<UserResponse> registerUser(UserResponse userResponse);
 
-    ResponseEntity<UserDTO> updateUser(UserDTO userDTO);
+    ResponseEntity<CommonResponse<UserDTO>> updateUser(CommonResponse<UserDTO> userDTOCommonResponse);
 
     ResponseEntity<UserResponse> loginUser(UserResponse userResponse);
 

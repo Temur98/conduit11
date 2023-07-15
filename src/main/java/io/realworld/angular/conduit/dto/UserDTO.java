@@ -10,14 +10,10 @@ import org.hibernate.validator.constraints.Length;
 
 @JsonRootName("user")
 public record UserDTO(
-        @NotNull(groups = OnCreate.class)
-        @Null(groups = OnUpdate.class)
         Long id,
-        @NotNull
         String username,
-        @Email
         String email,
-        @Length(min = 4, max = 16)
+        @Length(min = 4, max = 16, message = "min length : 4, max length : 16")
         String password,
         String bio,
         String image,

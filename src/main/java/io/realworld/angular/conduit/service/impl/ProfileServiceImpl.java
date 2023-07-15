@@ -1,6 +1,7 @@
 package io.realworld.angular.conduit.service.impl;
 
 import io.realworld.angular.conduit.dto.ProfileDTO;
+import io.realworld.angular.conduit.dto.response.CommonResponse;
 import io.realworld.angular.conduit.exception.NotFoundException;
 import io.realworld.angular.conduit.mapper.ProfileMapper;
 import io.realworld.angular.conduit.model.User;
@@ -21,9 +22,11 @@ public class ProfileServiceImpl implements ProfileService {
     private final ProfileMapper profileMapper;
 
     @Override
-    public ResponseEntity<ProfileDTO> getProfileByUsername(String username) {
+    public ResponseEntity<CommonResponse> getProfileByUsername(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("Profile not found"));
-        return ResponseEntity.ok(profileMapper.toProfile(user));
+        CommonResponse<ProfileDTO> commonResponse = new CommonResponse<>();
+        commonResponse.add("profile",profileMapper.toProfile(user));
+        return ResponseEntity.ok(commonResponse);
     }
 
     @Override
