@@ -36,7 +36,7 @@ public class Article {
     )
     private List<Profile> likes;
     @ManyToOne
-    @JoinColumn(name = "author_id")
-    private Users author;
+//    @JoinColumn(name = "author_id")
+    private Profile profile;
 
 }

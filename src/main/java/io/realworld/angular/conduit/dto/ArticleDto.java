@@ -19,7 +19,7 @@ public class ArticleDto {
     private String description;
     private String body;
     @JsonProperty(value = "tagList")
-    private List<TagDto> tags;
+    private List<String> tags;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     @JsonProperty(value = "favorited",defaultValue = "false")
@@ -28,4 +28,5 @@ public class ArticleDto {
     private Long favoritesCount;
     @JsonProperty(value = "author")
     private ProfileDto profileDto;
+    private List<ProfileDto> favoritedBy;
 }

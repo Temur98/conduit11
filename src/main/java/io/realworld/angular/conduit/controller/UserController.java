@@ -12,32 +12,31 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    @PostMapping("add-new-user")
-    public ResponseDto<UserDto> addNewUser(@RequestBody UserDto userDto){
-        return userService.addNewUser(userDto);
-    }
-    @GetMapping("get-by-id")
-    public ResponseDto<UserDto> getById(@RequestParam Long id){
-        return userService.getById(id);
-    }
-    @DeleteMapping("delete-by-id")
-    public ResponseDto<UserDto> deleteById(@RequestParam Long id){
-        return userService.deleteById(id);
-    }
-    @PutMapping("edit")
-    public ResponseDto<UserDto> edit(@RequestBody UserDto userDto){
-        return userService.edit(userDto);
-    }
-    @GetMapping("get-all-user")
-    public ResponseDto<List<UserDto>> getAllUser(){
-        return userService.getAllUser();
-    }
+//    @PostMapping("add-new-user")
+//    public ResponseDto<UserDto> addNewUser(@RequestBody UserDto userDto){
+//        return userService.addNewUser(userDto);
+//    }
+//    @GetMapping("get-by-id")
+//    public ResponseDto<UserDto> getById(@RequestParam Long id){
+//        return userService.getById(id);
+//    }
+//    @DeleteMapping("delete-by-id")
+//    public ResponseDto<UserDto> deleteById(@RequestParam Long id){
+//        return userService.deleteById(id);
+//    }
+//    @PutMapping("edit")
+//    public ResponseDto<UserDto> edit(@RequestBody UserDto userDto){
+//        return userService.edit(userDto);
+//    }
+//    @GetMapping("get-all-user")
+//    public ResponseDto<List<UserDto>> getAllUser(){
+//        return userService.getAllUser();
+//    }
     @PostMapping("/users/login")
-    public ResponseEntity<UserResponse> loginUser(@RequestBody UserResponse userResponse){
+    public ResponseEntity<UserResponse> loginUser(@RequestBody UserResponse userResponse) throws Exception {
         return userService.loginUser(userResponse);
     }
     @PostMapping("/users")
@@ -47,5 +46,9 @@ public class UserController {
     @PutMapping("/user")
     public ResponseEntity<UserResponse> updateProfile(@RequestBody UserResponse userResponse){
         return userService.updateUser(userResponse);
+    }
+    @GetMapping("/user")
+    public ResponseEntity<UserResponse> getUser(){
+        return userService.getUser();
     }
 }

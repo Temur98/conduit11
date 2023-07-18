@@ -4,6 +4,7 @@ import io.realworld.angular.conduit.dto.ArticleDto;
 import io.realworld.angular.conduit.dto.ResponseDto;
 import io.realworld.angular.conduit.dto.response.ArticleResponse;
 import io.realworld.angular.conduit.dto.response.CommentResponse;
+import io.realworld.angular.conduit.dto.responseList.ArticleListDto;
 import io.realworld.angular.conduit.dto.responseList.CommentListDto;
 import org.springframework.http.ResponseEntity;
 
@@ -11,23 +12,23 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ArticleService {
-    ResponseDto<ArticleDto> addNewArticle(ArticleDto articleDto);
+//    ResponseDto<ArticleDto> addNewArticle(ArticleDto articleDto);
+//
+//    ResponseDto<ArticleDto> getById(Long id);
+//
+//    ResponseDto<ArticleDto> deleteById(Long id);
+//
+//    ResponseDto<ArticleDto> edit(ArticleDto articleDto);
+//
+//    ResponseDto<List<ArticleDto>> getAllArticle();
 
-    ResponseDto<ArticleDto> getById(Long id);
-
-    ResponseDto<ArticleDto> deleteById(Long id);
-
-    ResponseDto<ArticleDto> edit(ArticleDto articleDto);
-
-    ResponseDto<List<ArticleDto>> getAllArticle();
-
-    ResponseEntity<ArticleDto> getArticles(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
+    ResponseEntity<ArticleListDto> getArticles(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
 
     ResponseEntity<ArticleResponse> getArticleBySlug(String slug);
 
     ResponseEntity<CommentListDto> getArticleComments(String slug);
 
-    ResponseEntity<ArticleDto> getArticlesByToken(Integer limit, Integer offset);
+    ResponseEntity<ArticleListDto> getArticlesByToken(Integer limit, Integer offset);
 
     ResponseEntity<ArticleResponse> addArticle(ArticleResponse articleResponse);
 
@@ -40,4 +41,6 @@ public interface ArticleService {
     void deleteComment(String slug, Long id);
 
     void deleteArticle(String slug);
+
+    ResponseEntity<ArticleResponse> updateArticle(String slug, ArticleResponse articleResponse);
 }

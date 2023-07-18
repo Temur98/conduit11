@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<Users,Long> {
 
     @Query(value = "select case when count(*) > 0 then true else false end" +
             "from Article a join follows f" +
-            "on a.author_id = f.user_id" +
-            "where a.author_id = ? and f.follower_id = ?", nativeQuery = true)
+            "on a.profile_id = f.user_id" +
+            "where a.profile_id = ? and f.follower_id = ?", nativeQuery = true)
     Boolean isFollowedToArticleOwner(Long authorId, Long userId);
 }

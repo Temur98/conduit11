@@ -11,30 +11,30 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("profiles")
+@RequestMapping("/profiles")
 @RequiredArgsConstructor
 public class ProfileController {
     private final ProfileService profileService;
-    @PostMapping
-    public ResponseDto<ProfileDto> addNewProfile(@RequestBody ProfileDto profileDto){
-        return profileService.addNewProfile(profileDto);
-    }
-    @GetMapping
-    public ResponseDto<ProfileDto> getById(@RequestParam Long id){
-        return profileService.getById(id);
-    }
-    @DeleteMapping("delete-by-id")
-    public ResponseDto<ProfileDto> deleteById(@RequestParam Long id){
-        return profileService.deleteById(id);
-    }
-    @PutMapping("edit")
-    public ResponseDto<ProfileDto> edit(@RequestBody ProfileDto profileDto){
-        return profileService.edit(profileDto);
-    }
-    @GetMapping("get-all-profile")
-    public ResponseDto<List<ProfileDto>> getAllProfile(){
-        return profileService.getAllProfile();
-    }
+//    @PostMapping
+//    public ResponseDto<ProfileDto> addNewProfile(@RequestBody ProfileDto profileDto){
+//        return profileService.addNewProfile(profileDto);
+//    }
+//    @GetMapping
+//    public ResponseDto<ProfileDto> getById(@RequestParam Long id){
+//        return profileService.getById(id);
+//    }
+//    @DeleteMapping("delete-by-id")
+//    public ResponseDto<ProfileDto> deleteById(@RequestParam Long id){
+//        return profileService.deleteById(id);
+//    }
+//    @PutMapping("edit")
+//    public ResponseDto<ProfileDto> edit(@RequestBody ProfileDto profileDto){
+//        return profileService.edit(profileDto);
+//    }
+//    @GetMapping("get-all-profile")
+//    public ResponseDto<List<ProfileDto>> getAllProfile(){
+//        return profileService.getAllProfile();
+//    }
     @GetMapping("/{username}")
     public ResponseEntity<ProfileResponse> getProfileByUsername(@PathVariable String username){
         return profileService.getProfileByUsername(username);

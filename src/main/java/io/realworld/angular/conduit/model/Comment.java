@@ -16,12 +16,12 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String body;
-    private LocalDate createAt;
+    private LocalDateTime createAt;
     private LocalDateTime updateAt;
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Users user;
+//    @JoinColumn(name = "user_id")
+    private Profile profile;
     @ManyToOne
-    @JoinColumn(name = "article_id")
+//    @JoinColumn(name = "article_id")
     private Article article;
 }

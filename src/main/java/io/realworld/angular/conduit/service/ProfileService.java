@@ -8,15 +8,15 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface ProfileService {
-    ResponseDto<ProfileDto> addNewProfile(ProfileDto profileDto);
-
-    ResponseDto<ProfileDto> getById(Long id);
-
-    ResponseDto<ProfileDto> deleteById(Long id);
-
-    ResponseDto<ProfileDto> edit(ProfileDto profileDto);
-
-    ResponseDto<List<ProfileDto>> getAllProfile();
+//    ResponseDto<ProfileDto> addNewProfile(ProfileDto profileDto);
+//
+//    ResponseDto<ProfileDto> getById(Long id);
+//
+//    ResponseDto<ProfileDto> deleteById(Long id);
+//
+//    ResponseDto<ProfileDto> edit(ProfileDto profileDto);
+//
+//    ResponseDto<List<ProfileDto>> getAllProfile();
 
     ResponseEntity<ProfileResponse> getProfileByUsername(String username);
 
