@@ -37,6 +37,7 @@ public class ArticleMapper {
         User author = article.getAuthor();
         ProfileDTO profileDTO = new ProfileDTO(author.getUsername(), author.getBio(), author.getImage(), true);
 
+        System.out.println(article.getTagList());
         return new ArticleDTO(
                 article.getId(),
                 toSlug(article.getTitle(), article.getId()),

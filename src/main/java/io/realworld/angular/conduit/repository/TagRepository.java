@@ -2,6 +2,7 @@ package io.realworld.angular.conduit.repository;
 
 import io.realworld.angular.conduit.model.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,4 +12,7 @@ import java.util.Optional;
 public interface TagRepository extends JpaRepository<Tag,Integer> {
     Optional<Tag> findByName(String tag);
     List<Tag> findTagsByNameIn(List<String> names);
+
+//    @Query(nativeQuery = true, value = "")
+//    List<Tag> findPopularTags();
 }

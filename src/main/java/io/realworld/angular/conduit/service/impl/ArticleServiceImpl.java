@@ -68,9 +68,9 @@ public class ArticleServiceImpl implements ArticleService {
         Article entity = articleMapper.toEntity(articleDTO);
         entity.setAuthor(userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found")));
         entity.setCreatedAt(LocalDate.now());
-
+        System.out.println(entity);
         Article save = articleRepository.save(entity);
-
+        save.setTagList(entity.getTagList());
         return ResponseEntity.ok(Map.of("article", articleMapper.toDto(save)));
     }
 
