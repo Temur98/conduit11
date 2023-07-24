@@ -2,14 +2,16 @@ package io.realworld.angular.conduit.service;
 
 
 import io.realworld.angular.conduit.dto.UserDTO;
+import io.realworld.angular.conduit.dto.response.CommentResponse;
+import io.realworld.angular.conduit.dto.response.UserResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService{
-    ResponseEntity<UserDTO> registerUser(UserDTO userDTO);
+    ResponseEntity<UserResponse> registerUser(UserResponse UserResponse);
 
-    ResponseEntity<UserDTO> updateUser(UserDTO userDTO);
+    ResponseEntity<CommentResponse<UserDTO>> updateUser(CommentResponse<UserDTO> userDTO);
 
-    ResponseEntity<UserDTO> loginUser(UserDTO user);
+    ResponseEntity<UserResponse> loginUser(UserResponse userResponse);
 
-    ResponseEntity<UserDTO> getCurrentUser();
+    ResponseEntity<CommentResponse> getCurrentUser();
 }

@@ -1,17 +1,23 @@
 package io.realworld.angular.conduit.controller;
 
+import io.realworld.angular.conduit.controller.create.Create;
 import io.realworld.angular.conduit.dto.ArticleDTO;
 import io.realworld.angular.conduit.dto.response.CommentResponse;
 import io.realworld.angular.conduit.service.ArticleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.security.Principal;
+import java.util.Map;
 import java.util.Optional;
 
 
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/articles")
 public class ArticleController {
@@ -36,9 +42,10 @@ public class ArticleController {
     public void deleteArticle(@PathVariable String slug){
         articleService.deleteArticle(slug);
     }
-    @PostMapping
-    public ResponseEntity<ArticleDTO> addArticle(@RequestBody ArticleDTO articleDTO){
-        return articleService.addArticle(articleDTO);
+    @PostMapping("/")
+    @Validated(Create.class)
+    public ResponseEntity<Map<String,ArticleDTO>> addArticle(@Valid @RequestBody Map<String,ArticleDTO> articleMap){
+        return articleService.addArticle(articleMap);
     }
 
     @PutMapping
@@ -50,8 +57,8 @@ public class ArticleController {
         return articleService.addFavorite(slug);
     }
     @DeleteMapping("/{slug}/favorite")
-    public void deleteFavorite(@PathVariable String slug){
-        articleService.deleteFavorite(slug);
+    public void deleteFavorite(@PathVariable String slug, Principal principal){
+        articleService.deleteFavorite(slug,principal);
     }
 
 

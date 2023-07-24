@@ -1,20 +1,25 @@
 package io.realworld.angular.conduit.repository;
-import io.realworld.angular.conduit.repository.extension.LikesExtension;
-import io.realworld.angular.conduit.repository.extension.ArticleExtension;
+
 import io.realworld.angular.conduit.model.Article;
+import io.realworld.angular.conduit.repository.extension.ArticleExtension;
+import io.realworld.angular.conduit.repository.extension.LikesExtension;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article,Long>, LikesExtension, ArticleExtension {
-
+    List<Article> findArticleByAuthorId(Long id, PageRequest pageRequest);
+    List<Article> getArticlesPageable(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
     @Query(value = "select case when count(*) > 0 then true else false end\n" +
             "from ARTICLES a join LIKES l on a.ID = l.ARTICLE_ID\n" +
             "where l.USER_ID = ? and a.ID = ?", nativeQuery = true)
-    boolean isFavorited(Long userId, Long id);
-    @Query(value = "select count(*) from ARTICLES a join LIKES l on a.ID = l.ARTICLE_ID where a.id = ?", nativeQuery = true)
-    long getFavoritesCount(Long id);
-//    Optional<Object> getArticlesPageable(Integer limit, Integer offset, Optional<String> author, Optional<String> favorited, Optional<String> tag);
-}
+    Long isFavorited(Long userId, Long id);
+    @Query(value = "select count(*) from LIKES where ARTICLE_ID = ?", nativeQuery = true)
+    Long getFavoritesCount(Long id);
+    }

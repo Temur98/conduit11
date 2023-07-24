@@ -20,7 +20,7 @@ public class CommentController {
         return commentService.getCommentsBySlug(slug);
     }
     @PostMapping("/{slug}comments")
-    public ResponseEntity<CommentDTO> addCommentBySlug(@PathVariable String slug, @RequestBody CommentDTO comment){
+    public ResponseEntity<CommentResponse<CommentDTO>> addCommentBySlug(@PathVariable String slug, @RequestBody CommentResponse<CommentDTO> comment){
         return commentService.addCommentBySlug(slug,comment);
     }
     @DeleteMapping("/{slug}/comments/{commentId}")

@@ -1,6 +1,5 @@
 package io.realworld.angular.conduit.controller;
 
-import io.realworld.angular.conduit.dto.TagDTO;
 import io.realworld.angular.conduit.dto.response.CommentResponse;
 import io.realworld.angular.conduit.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ public class TagController {
     private final TagService tagService;
 
     @GetMapping
-    public ResponseEntity<CommentResponse<List<TagDTO>>> getAll (){
+    public ResponseEntity<CommentResponse<List<String>>> getAll (){
         return tagService.getAll();
     }
 

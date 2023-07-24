@@ -6,15 +6,22 @@ import io.realworld.angular.conduit.dto.response.CommentResponse;
 import io.realworld.angular.conduit.exception.NotFoundException;
 import io.realworld.angular.conduit.mapper.ArticleMapper;
 import io.realworld.angular.conduit.model.Article;
+import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.repository.ArticleRepository;
 import io.realworld.angular.conduit.repository.UserRepository;
 import io.realworld.angular.conduit.service.ArticleService;
 import io.realworld.angular.conduit.service.CommonService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -28,53 +35,52 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ResponseEntity<CommentResponse<List<ArticleDTO>>> getAllArticles(Optional<Integer> limit, Optional<Integer> offset, Optional<String> author, Optional<String> favorited, Optional<String> tag) {
-//        PageRequest pageRequest = null;
-//        if(limit.isPresent() && offset.isPresent()) {
-//            pageRequest = PageRequest.of(offset.get() / limit.get(), limit.get());
-//            List<ArticleDTO> articleDTOList = articleRepository.findAll(pageRequest).stream().map(a -> articleMapper.toDto(a, articleRepository, userRepository)).toList();
-//
-//            if (author.isPresent()) {
-//                articleDTOList = articleDTOList.stream().filter(articleDTO -> articleDTO.author().userName().equals(author.get())).toList();
-//            }
-//
-//            if (tag.isPresent()) {
-//                articleDTOList = articleDTOList.stream().filter(articleDTO -> articleDTO.tagList().contains(tag)).toList();
-//            }
-//            if(favorited.isPresent()){
-//                articleDTOList = articleDTOList.stream().filter(ArticleDTO::favorited).toList();
-//            }
-//            CommentResponse<List<ArticleDTO>> response = new CommentResponse<>();
-//            response.add("articles", articleDTOList);
-//            return ResponseEntity.ok(response);
-//
-//        }
-//        throw new NotFoundException("Article Not found");
 
-        List<ArticleDTO> allArticles = articleRepository.getAllArticles(limit, offset, author, favorited, tag);
-        CommentResponse commonResponse = new CommentResponse<>();
-        commonResponse.add("articles", allArticles);
-        return ResponseEntity.ok(commonResponse);
+
+        if (limit.isPresent() && offset.isPresent()) {
+            List<Article> allArticles = articleRepository.getArticlesPageable(limit.get(), offset.get(), author, favorited, tag);
+
+            List<ArticleDTO> articles = allArticles.stream().map(articleMapper::toDto).toList();
+
+            CommentResponse commentResponse = new CommentResponse<>();
+            commentResponse.add("articles", articles);
+            commentResponse.add("articlesCount", articles.size());
+            return ResponseEntity.ok(commentResponse);
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @Override
-    public ResponseEntity<ArticleDTO> getArticleBySlag(String slug) {
+    public ResponseEntity<CommentResponse<ArticleDTO>> getArticleBySlag(String slug) {
         Long id = CommonService.getIdBySlug(slug);
         Article article = articleRepository.findById(id).orElseThrow(() -> new NotFoundException("Article not found"));
-        ArticleDTO dto = articleMapper.toDto(article, articleRepository, userRepository);
-        return ResponseEntity.ok(dto);
+        ArticleDTO dto = articleMapper.toDto(article);
+        CommentResponse<ArticleDTO> commentResponse = new CommentResponse<>();
+        commentResponse.add("article",dto);
+        return ResponseEntity.ok(commentResponse);
     }
 
     @Override
-    public ResponseEntity<ArticleDTO> addArticle(ArticleDTO articleDTO) {
-        Article save = articleRepository.save(articleMapper.toEntity(articleDTO));
-        return ResponseEntity.ok(articleMapper.toDto(save, articleRepository, userRepository));
+    public ResponseEntity<Map<String, ArticleDTO>> addArticle(Map<String,ArticleDTO> articleMap) {
+        ArticleDTO articleDTO = articleMap.get("article");
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Article entity = articleMapper.toEntity(articleDTO);
+        entity.setAuthor(userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found")));
+        entity.setCreatedAt(LocalDate.now());
+        System.out.println(entity);
+        Article save = articleRepository.save(entity);
+        save.setTagList(entity.getTagList());
+        return ResponseEntity.ok(Map.of("article", articleMapper.toDto(save)));
     }
 
     @Override
     public ResponseEntity<ArticleDTO> updateArticle(ArticleDTO articleDTO) {
-        articleRepository.findById(articleDTO.id()).orElseThrow(() -> new NotFoundException("Article not found"));
+        articleRepository.findById(articleDTO.getId()).orElseThrow(() -> new NotFoundException("Article not found"));
+        articleDTO.setUpdateAt(LocalDate.now());
         Article save = articleRepository.save(articleMapper.toEntity(articleDTO));
-        return ResponseEntity.ok(articleMapper.toDto(save,articleRepository,userRepository));
+        return ResponseEntity.ok(articleMapper.toDto(save));
     }
 
     @Override
@@ -83,24 +89,41 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.findById(idBySlug).orElseThrow(() -> new NotFoundException("Article not found"));
         Article save = articleRepository.save(articleMapper.toEntity(articleDTO));
 
-        return ResponseEntity.ok(articleMapper.toDto(save,articleRepository,userRepository));
+        return ResponseEntity.ok(articleMapper.toDto(save));
+    }
+
+    @Override
+    public ResponseEntity<CommentResponse<ArticleDTO>> getOwnUserArticleByPagination(Optional<Integer> limit, Optional<Integer> offset) {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(name).orElseThrow(() -> new NotFoundException("User not found"));
+        PageRequest pageRequest = null;
+        if (limit.isPresent() && offset.isPresent()){
+            pageRequest = PageRequest.of(offset.get() / limit.get(), limit.get());
+        }
+        List<Article> articleByAuthorId = articleRepository.findArticleByAuthorId(user.getId(), pageRequest);
+
+        CommentResponse commonResponse = new CommentResponse();
+        commonResponse.add("articles",articleByAuthorId.stream().map((Article article) -> articleMapper.toDto(article)).toList());
+        commonResponse.add("articlesCount",articleByAuthorId.size());
+        return ResponseEntity.ok(commonResponse);
     }
 
     @Override
     public ResponseEntity<ArticleDTO> addFavorite(String slug) {
         Long idBySlug = CommonService.getIdBySlug(slug);
         Article article = articleRepository.findById(idBySlug).orElseThrow(() -> new NotFoundException("Article not found"));
-        Long userId = 0L;
-        Integer integer = articleRepository.addLike(idBySlug, userId);
-        System.out.println(integer);
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        return ResponseEntity.ok(articleMapper.toDto(article,articleRepository,userRepository));
+        User user = userRepository.findByEmail(name).orElseThrow(() -> new NotFoundException("User not found"));
+        articleRepository.addLike(idBySlug, user.getId());
+
+        return ResponseEntity.ok(articleMapper.toDto(article));
     }
 
     @Override
-    public void deleteFavorite(String slug) {
+    public void deleteFavorite(String slug, Principal principal) {
         Long idBySlug = CommonService.getIdBySlug(slug);
-        Long userId = 0L;
+        Long userId = userRepository.findByEmail(principal.getName()).orElseThrow(() -> new NotFoundException("User not found")).getId();
         articleRepository.removeLike(idBySlug,userId);
     }
 

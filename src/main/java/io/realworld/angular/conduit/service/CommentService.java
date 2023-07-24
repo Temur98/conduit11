@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface CommentService {
     ResponseEntity<CommentResponse<List<CommentDTO>>> getCommentsBySlug(String slug);
-    ResponseEntity<CommentDTO> addCommentBySlug(String slug, CommentDTO comment);
+    ResponseEntity<CommentResponse<CommentDTO>> addCommentBySlug(String slug, CommentResponse<CommentDTO> comment);
     void deleteComment(String slug, Long commentId);
 }

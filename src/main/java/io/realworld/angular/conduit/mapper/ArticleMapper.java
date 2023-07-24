@@ -2,53 +2,76 @@ package io.realworld.angular.conduit.mapper;
 
 import io.realworld.angular.conduit.dto.ArticleDTO;
 import io.realworld.angular.conduit.dto.ProfileDTO;
+import io.realworld.angular.conduit.exception.NotFoundException;
 import io.realworld.angular.conduit.model.Article;
+import io.realworld.angular.conduit.model.User;
 import io.realworld.angular.conduit.repository.ArticleRepository;
+import io.realworld.angular.conduit.repository.TagRepository;
 import io.realworld.angular.conduit.repository.UserRepository;
-import org.mapstruct.Context;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
-@Mapper(componentModel = "spring")
+import java.util.Collections;
+import java.util.Optional;
 
-public interface ArticleMapper {
-    @Mapping(target = "slug", source = "article", qualifiedByName = "toDtoSlug")
-    @Mapping(target = "favorited", source = "article", qualifiedByName = "toDtoFavorited")
-    @Mapping(target = "favoritesCount", source = "article", qualifiedByName = "toDtoFavoritesCount")
-    @Mapping(target = "author", source = "article", qualifiedByName = "toDtoAuthor")
-    ArticleDTO toDto(Article article, @Context ArticleRepository articleRepository, @Context UserRepository userRepository);
+@Service
+@RequiredArgsConstructor
+public class ArticleMapper {
+    private final TagRepository tagRepository;
+    private final ArticleRepository articleRepository;
+    private final UserRepository userRepository;
+    private final TagMapper tagMapper;
 
-    Article toEntity(ArticleDTO articleDTO);
 
-    @Named("toDtoSlug")
-    default String toDtoSlug(Article article){
+
+    public ArticleDTO toDto(Article article) {
         if (article == null) return null;
-        return article.getTitle().concat("-").concat(String.valueOf(article.getId()));
-    }
+        String email     = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        Long userId = null;
+        if (user.isPresent()) {
+            userId = user.get().getId();
+        }
+        User author = article.getAuthor();
+        ProfileDTO profileDTO = new ProfileDTO(author.getUsername(), author.getBio(), author.getImage(), true);
 
-    @Named("toDtoFavorited")
-    default boolean toDtoFavorited(@Context ArticleRepository articleRepository, Article article){
-        if (article == null) return false;
-        Long id = article.getId();
-        return articleRepository.isFavorited(0L, id);
-    }
-
-    @Named("toDtoFavoritesCount")
-    default Long toDtoFavoritesCount(@Context ArticleRepository articleRepository, Article article){
-        if (article == null) return null;
-        return articleRepository.getFavoritesCount(article.getId());
-    }
-
-    @Named("toDtoAuthor")
-    default ProfileDTO toDtoAuthor(@Context UserRepository userRepository, Article article){
-        if (article == null) return null;
-        return new ProfileDTO(
-                article.getAuthor().getUsername(),
-                article.getAuthor().getBio(),
-                article.getAuthor().getImage(),
-                userRepository.isFollowedToArticleOwner(article.getAuthor().getId(), 0L)
+        System.out.println(article.getTagList());
+        return new ArticleDTO(
+                article.getId(),
+                toSlug(article.getTitle(), article.getId()),
+                article.getTitle(),
+                article.getDescription(),
+                article.getBody(),
+                article.getTagList().stream().map(io.realworld.angular.conduit.model.Tag::getName).toList(),
+                article.getCreatedAt(),
+                article.getUpdatedAt(),
+                articleRepository.isFavorited(userId, article.getId()) == 0,
+                articleRepository.getFavoritesCount(article.getId()),
+                profileDTO
         );
     }
 
+
+    public Article toEntity(ArticleDTO articleDTO) {
+        if (articleDTO == null) return null;
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(name).orElseThrow(() -> new NotFoundException("User not found"));
+
+        return new Article(
+                articleDTO.getId(),
+                articleDTO.getTitle(),
+                articleDTO.getDescription(),
+                articleDTO.getBody(),
+                articleDTO.getCreatedAt(),
+                articleDTO.getUpdateAt(),
+                tagMapper.toEntities(articleDTO.getTagList()),
+                Collections.singletonList(null),
+                user
+        );
+    }
+
+    private String toSlug(String title, Long id) {
+        return title.replace(" ", "-") + "-" + id;
+    }
 }
